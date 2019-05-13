@@ -1,12 +1,15 @@
 package fr.esgi.j2e.group6.captchup.user.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class User implements UserDetails {
@@ -18,11 +21,20 @@ public class User implements UserDetails {
 
     private String password;
 
+    @ManyToMany
+    private List<User> followed;
+
     public User() {}
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String username, String password, List<User> followedUsers) {
+        this.username = username;
+        this.password = password;
+        this.followed = followedUsers;
     }
 
     public Integer getId() {
@@ -47,6 +59,16 @@ public class User implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @JsonIgnore
+    public List<User> getFollowed() {
+        return followed;
+    }
+
+    public void setFollowed(List<User> followed) {
+        this.followed = followed;
+    }
+
     // UserDetails methods
 
     @Override
@@ -74,5 +96,19 @@ public class User implements UserDetails {
         return null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(followed, user.followed);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, followed);
+    }
 }
