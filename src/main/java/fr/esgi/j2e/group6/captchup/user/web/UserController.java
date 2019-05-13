@@ -34,6 +34,11 @@ public class UserController {
         return userRepository.findById(id);
     }
 
+    @DeleteMapping(path = "/delete/{id}")
+    public @ResponseBody void deleteUser(@PathVariable("id") int id) {
+        userRepository.deleteById(id);
+    }
+
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(path="/sign-up")
     public void signUp(@RequestBody User user) {
