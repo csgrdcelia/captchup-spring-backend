@@ -43,7 +43,6 @@ public class UserController {
     @PostMapping(path="/sign-up")
     public @ResponseBody User signUp(@RequestBody User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 }
