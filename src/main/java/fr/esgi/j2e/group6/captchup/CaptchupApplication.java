@@ -14,10 +14,6 @@ public class CaptchupApplication {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    /*@Bean
-    public UserService userService() {return new UserService();}*/
-
     public static void main(String[] args) {
         SpringApplication.run(CaptchupApplication.class, args);
     }
