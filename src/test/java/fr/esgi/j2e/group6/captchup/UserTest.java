@@ -20,14 +20,12 @@ public class UserTest {
     private MockMvc mockMvc;
 
     @Test
-    public void signup_shouldReturnOk() throws Exception {
-        // When
+    public void getAllUsers_notLoggedIn_shouldReturnForbidden() throws Exception {
         final ResultActions result = mockMvc.perform(
                 get("/user/all")
                         .accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
         result.andExpect(status().isForbidden());
-
     }
 
 }
