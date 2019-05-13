@@ -41,8 +41,8 @@ public class UserController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(path="/sign-up")
-    public void signUp(@RequestBody User user) {
+    public @ResponseBody User signUp(@RequestBody User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }
