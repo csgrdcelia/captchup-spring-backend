@@ -58,19 +58,23 @@ public class UserTest {
     }
 
     //not tested, wait for delete function
-    /*@Test
+    @Test
     public void signUp_shouldReturnOk() throws Exception {
+
         final ResultActions result = mockMvc.perform(
           post("/user/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("")
+                .content("{\n" +
+                        "\t\"username\": \"temporary\",\n" +
+                        "\t\"password\": \"temporary\"\n" +
+                        "}")
         );
 
         result.andExpect(status().isOk());
 
         //TODO: delete created user
 
-    }*/
+    }
 
 
 }
