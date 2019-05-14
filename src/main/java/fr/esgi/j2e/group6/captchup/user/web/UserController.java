@@ -75,5 +75,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    
+    @PatchMapping(path = "/unfollow/{id}")
+    public ResponseEntity<User> unfollowUser(@PathVariable("id") int id) {
+        User user;
+        try {
+            user = userService.unfollowUser(userRepository.findById(id));
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
 }

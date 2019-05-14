@@ -61,4 +61,23 @@ public class UserService implements UserDetailsService {
 
         return userRepository.findByUsername(username);
     }
+
+    public User unfollowUser(Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {
+        User loggedUser = getCurrentLoggedInUser();
+
+        if(!userToUnfollow.isPresent()) {
+            throw new NotFoundException("User to unfollow doesn't exists.");
+        }
+
+        if(loggedUser == null) {
+            throw new AccessDeniedException("You need to be connected.");
+        }
+
+        if(loggedUser.getFollowed().contains(userToUnfollow.get())) {
+            loggedUser.getFollowed().remove(userToUnfollow.get());
+            userRepository.save(loggedUser);
+        }
+
+        return loggedUser;
+    }
 }
