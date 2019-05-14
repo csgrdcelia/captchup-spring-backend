@@ -51,6 +51,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user.get());
     }
 
+    /*
     @DeleteMapping(path = "/delete/{id}")
     public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
         Optional<User> user = userRepository.findById(id);
@@ -59,6 +60,20 @@ public class UserController {
         }
 
         userRepository.delete(user.get());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+     */
+
+    @DeleteMapping(path = "/delete/{id}")
+    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
+        try {
+            userService.deleteUser(id);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
@@ -93,7 +108,7 @@ public class UserController {
     public ResponseEntity<User> unfollowUser(@PathVariable("id") int id) {
         User user;
         try {
-            user = userService.unfollowUser(userRepository.findById(id));
+            user = userService.unfollowUser(userService.getCurrentLoggedInUser(), userRepository.findById(id));
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (AccessDeniedException e) {

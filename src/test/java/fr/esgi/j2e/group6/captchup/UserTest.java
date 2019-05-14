@@ -127,15 +127,22 @@ public class UserTest {
 
         // getting the follow list
         User currentUser = userRepository.findByUsername(connectedUser.getUsername());
-        assert(currentUser.getFollowed() != null);
-
+        assert(currentUser.getFollow() != null);
         // checking it has followed the right user
-        User userFollowed = currentUser.getFollowed().stream().filter(x -> x.getId().equals(user1.getId())).findFirst().orElse(null);
+        User userFollowed = currentUser.getFollow().stream().filter(x -> x.getId().equals(user1.getId())).findFirst().orElse(null);
         assert(userFollowed != null);
+        // checking the followed user has the current user in his followers
+        User userFollowedBy = userFollowed.getFollowedBy().stream().filter(x -> x.getId().equals(currentUser.getId())).findFirst().orElse(null);
+        assert(userFollowedBy != null);
 
         // deleting the follow
-        currentUser.getFollowed().remove(userFollowed);
-        userRepository.save(currentUser);
+        final ResultActions unfollowResult = mockMvc.perform(
+                patch("/user/unfollow/{id}", user1.getId())
+                        .header("Authorization",token)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        unfollowResult.andExpect(status().isOk());
     }
 
     @Test
@@ -191,7 +198,7 @@ public class UserTest {
 
         // the response body does not returns the followings so we retrieve it
         User currentUser = userRepository.findByUsername(jsonParser.parseMap(unfollowResult.andReturn().getResponse().getContentAsString()).get("username").toString());
-        assert(currentUser.getFollowed() == null || currentUser.getFollowed().size() == 0);
+        assert(currentUser.getFollow() == null || currentUser.getFollow().size() == 0);
 
     }
 

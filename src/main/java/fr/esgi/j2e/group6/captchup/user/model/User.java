@@ -21,7 +21,20 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<User> followed;
+    @JoinTable(
+            name = "user_follow",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private List<User> follow;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_follow",
+            joinColumns = @JoinColumn(name = "followed_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> followedBy;
 
     public User() {}
 
@@ -30,10 +43,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(String username, String password, List<User> followedUsers) {
+    public User(String username, String password, List<User> followedUsers, List<User> followedByUsers) {
         this.username = username;
         this.password = password;
-        this.followed = followedUsers;
+        this.follow = followedUsers;
+        this.followedBy = followedByUsers;
     }
 
     public Integer getId() {
@@ -47,6 +61,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -60,12 +75,38 @@ public class User implements UserDetails {
     }
 
     @JsonIgnore
-    public List<User> getFollowed() {
-        return followed;
+    public List<User> getFollow() {
+        return follow;
     }
 
-    public void setFollowed(List<User> followed) {
-        this.followed = followed;
+    public void setFollow(List<User> follow) {
+        this.follow = follow;
+    }
+
+    @JsonIgnore
+    public List<User> getFollowedBy() {
+        return followedBy;
+    }
+
+    public void setFollowedBy(List<User> followedBy) {
+        this.followedBy = followedBy;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(follow, user.follow) &&
+                Objects.equals(followedBy, user.followedBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, follow, followedBy);
     }
 
     // UserDetails methods
@@ -100,19 +141,4 @@ public class User implements UserDetails {
         return null;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(username, user.username) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(followed, user.followed);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, followed);
-    }
 }
