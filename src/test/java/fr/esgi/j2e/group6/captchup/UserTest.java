@@ -224,7 +224,7 @@ public class UserTest {
     }
 
     @Test
-    public void deleteUser_shouldReturnOk() throws Exception {
+    public void deleteUser_shouldReturnNoContent() throws Exception {
         User user = userRepository.save(new User("temporary", "temporary"));
 
         final ResultActions deletionResult = mockMvc.perform(
@@ -232,7 +232,7 @@ public class UserTest {
                         .header("Authorization",token)
                         .accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
-        deletionResult.andExpect(status().isOk());
+        deletionResult.andExpect(status().isNoContent());
 
         assert(!userExists("temporary"));
     }
