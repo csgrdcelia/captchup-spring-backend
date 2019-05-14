@@ -16,12 +16,12 @@ public class Level {
 
     private URL image;
 
-    @ManyToMany
-    private List<Answer> answers;
+    @OneToMany(mappedBy = "level")
+    private List<LevelAnswer> answers;
 
     public Level() { }
 
-    public Level(User creator, URL image, List<Answer> answers) {
+    public Level(User creator, URL image, List<LevelAnswer> answers) {
         this.creator = creator;
         this.image = image;
         this.answers = answers;
@@ -51,11 +51,11 @@ public class Level {
         this.id = id;
     }
 
-    public List<Answer> getAnswers() {
+    public List<LevelAnswer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(List<LevelAnswer> answers) {
         this.answers = answers;
     }
 }

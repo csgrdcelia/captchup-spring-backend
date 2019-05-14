@@ -11,10 +11,10 @@ public class Answer {
 
     private String word;
 
-    @ManyToMany
-    private List<Level> levels;
+    @OneToMany(mappedBy = "answer")
+    private List<LevelAnswer> levels;
 
-    public Answer(String word, List<Level> levels) {
+    public Answer(String word, List<LevelAnswer> levels) {
         this.word = word;
         this.levels = levels;
     }
@@ -35,11 +35,11 @@ public class Answer {
         this.word = word;
     }
 
-    public List<Level> getLevels() {
+    public List<LevelAnswer> getLevels() {
         return levels;
     }
 
-    public void setLevels(List<Level> levels) {
+    public void setLevels(List<LevelAnswer> levels) {
         this.levels = levels;
     }
 }
