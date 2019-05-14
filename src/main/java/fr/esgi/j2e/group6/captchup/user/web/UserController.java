@@ -41,18 +41,26 @@ public class UserController {
     }
 
     @GetMapping(path="/{id}")
-    public @ResponseBody User getUserById(@PathVariable("id") int id) {
-        //return userRepository.findById(id);
-        User result = userRepository.findById(id).get();
+    public @ResponseBody ResponseEntity<User> getUserById(@PathVariable("id") int id) {
+        Optional<User> user = userRepository.findById(id);
 
-        System.out.println(result);
+        if(!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
 
-        return result;
+        return ResponseEntity.status(HttpStatus.OK).body(user.get());
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public @ResponseBody void deleteUser(@PathVariable("id") int id) {
-        userRepository.deleteById(id);
+    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        userRepository.delete(user.get());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @PostMapping(path="/sign-up")
