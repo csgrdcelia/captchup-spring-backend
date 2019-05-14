@@ -3,14 +3,11 @@ package fr.esgi.j2e.group6.captchup.user.service;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import javassist.NotFoundException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
@@ -48,8 +45,8 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException();
         }
 
-        if(!loggedUser.getFollowed().contains(userToFollow.get())) {
-            loggedUser.getFollowed().add(userToFollow.get());
+        if(!loggedUser.getFollow().contains(userToFollow.get())) {
+            loggedUser.getFollow().add(userToFollow.get());
             userRepository.save(loggedUser);
         }
 
@@ -73,11 +70,20 @@ public class UserService implements UserDetailsService {
             throw new AccessDeniedException("You need to be connected.");
         }
 
-        if(loggedUser.getFollowed().contains(userToUnfollow.get())) {
-            loggedUser.getFollowed().remove(userToUnfollow.get());
+        if(loggedUser.getFollow().contains(userToUnfollow.get())) {
+            loggedUser.getFollow().remove(userToUnfollow.get());
             userRepository.save(loggedUser);
         }
 
         return loggedUser;
+    }
+
+    public void deleteUser(int id) throws NotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()) {
+            throw new NotFoundException("User with id '" + id + "' doesn't exist.");
+        }
+
+        userRepository.delete(user.get());
     }
 }
