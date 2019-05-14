@@ -59,29 +59,32 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public User unfollowUser(Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {
-        User loggedUser = getCurrentLoggedInUser();
-
+    public User unfollowUser(User activeUser, Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {
         if(!userToUnfollow.isPresent()) {
             throw new NotFoundException("User to unfollow doesn't exists.");
         }
 
-        if(loggedUser == null) {
+        if(activeUser == null) {
             throw new AccessDeniedException("You need to be connected.");
         }
 
-        if(loggedUser.getFollow().contains(userToUnfollow.get())) {
-            loggedUser.getFollow().remove(userToUnfollow.get());
-            userRepository.save(loggedUser);
+        if(activeUser.getFollow().contains(userToUnfollow.get())) {
+            activeUser.getFollow().remove(userToUnfollow.get());
+            userRepository.save(activeUser);
         }
 
-        return loggedUser;
+        return activeUser;
     }
 
-    public void deleteUser(int id) throws NotFoundException {
+    public void deleteUser(int id) throws NotFoundException, AccessDeniedException {
         Optional<User> user = userRepository.findById(id);
         if(!user.isPresent()) {
             throw new NotFoundException("User with id '" + id + "' doesn't exist.");
+        }
+
+        for (User follower: user.get().getFollowedBy()) {
+            unfollowUser(follower, user);
+            userRepository.save(follower);
         }
 
         userRepository.delete(user.get());
