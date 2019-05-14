@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -53,11 +55,15 @@ public class UserController {
         userRepository.deleteById(id);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(path="/sign-up")
-    public @ResponseBody User signUp(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public ResponseEntity<User> signUp(@RequestBody User user) {
+        User foundUser = userRepository.findByUsername(user.getUsername());
+        if(foundUser == null) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            return ResponseEntity.status(HttpStatus.OK).body(userRepository.save(user));
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
     }
 
     @PatchMapping(path = "/follow/{id}")

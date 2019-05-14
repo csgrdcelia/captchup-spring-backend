@@ -93,6 +93,19 @@ public class UserTest {
         result.andExpect(status().isForbidden());
     }
 
+    @Test
+    public void signUp_withExistingUsername_shouldReturnConflict() throws Exception {
+        final ResultActions result = mockMvc.perform(
+                post("/user/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "\t\"username\": \"celia\",\n" +
+                                "\t\"password\": \"password\"\n" +
+                                "}")
+        );
+
+        result.andExpect(status().isConflict());
+    }
 
     @Test
     public void signUpAndDelete_shouldReturnOkAndDeleted() throws Exception {
@@ -131,8 +144,9 @@ public class UserTest {
         List<User> users = mapper.readValue(resultAfterDeletion.andReturn().getResponse().getContentAsString(), new TypeReference<List<User>>(){});
 
         assert(users.stream().filter(x -> String.valueOf(x.getId()) == id).count() == 0);
-
     }
+
+
 
 
 }
