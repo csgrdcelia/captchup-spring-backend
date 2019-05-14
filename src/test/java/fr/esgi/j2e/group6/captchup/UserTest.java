@@ -3,6 +3,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,20 +35,41 @@ public class UserTest {
     private UserRepository userRepository;
 
     private String token;
+    private User connectedUser;
+    private User user1;
+
+    private ObjectMapper mapper;
+    private JacksonJsonParser jsonParser;
 
 
     @Before
     public void setUp() throws Exception {
+        mapper = new ObjectMapper();
+        jsonParser = new JacksonJsonParser();
+
+        final ResultActions resultSignUp = mockMvc.perform(
+                post("/user/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(new User("testUser", "testUser")))
+        );
+
+        connectedUser = userRepository.findByUsername("testUser");
+
         final ResultActions result = mockMvc.perform(
                 post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "\t\"username\": \"testuser\",\n" +
-                                "\t\"password\": \"password\"\n" +
-                                "}")
+                        .content(mapper.writeValueAsString(new User("testUser", "testUser")))
         );
 
         token = result.andReturn().getResponse().getHeader("Authorization");
+
+        user1 = userRepository.save(new User("user1", "user1"));
+    }
+
+    @After
+    public void after() {
+        userRepository.delete(connectedUser);
+        userRepository.delete(user1);
     }
 
     @Test
@@ -71,10 +93,8 @@ public class UserTest {
 
     @Test
     public void getUserById_LoggedIn_shouldReturnOkAndUser() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions result = mockMvc.perform(
-                get("/user/{id}", 1)
+                get("/user/{id}", user1.getId())
                         .header("Authorization",token)
                         .accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
@@ -83,15 +103,13 @@ public class UserTest {
         String resultContent = result.andReturn().getResponse().getContentAsString();
         String username = jsonParser.parseMap(resultContent).get("username").toString();
 
-        assert(username.equals("celia"));
+        assert(username.equals(user1.getUsername()));
     }
 
     @Test
     public void getUserById_notLoggedIn_shouldReturnForbidden() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions result = mockMvc.perform(
-                get("/user/{id}", 1)
+                get("/user/{id}", user1.getId())
                         .accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
 
         result.andExpect(status().isForbidden());
@@ -99,30 +117,29 @@ public class UserTest {
 
     @Test
     public void follow_shouldReturnOk() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions result = mockMvc.perform(
-                patch("/user/follow/{id}", 1)
+                patch("/user/follow/{id}", user1.getId())
                         .header("Authorization",token)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
         result.andExpect(status().isOk());
 
-        // the response body does not returns the followings so we retrieve it
-        User currentUser = userRepository.findByUsername(jsonParser.parseMap(result.andReturn().getResponse().getContentAsString()).get("username").toString());
+        // getting the follow list
+        User currentUser = userRepository.findByUsername(connectedUser.getUsername());
         assert(currentUser.getFollowed() != null);
 
-        User userFollowed = currentUser.getFollowed().stream().filter(x -> x.getId() == 1).findFirst().orElse(null);
+        // checking it has followed the right user
+        User userFollowed = currentUser.getFollowed().stream().filter(x -> x.getId().equals(user1.getId())).findFirst().orElse(null);
         assert(userFollowed != null);
+
+        // deleting the follow
         currentUser.getFollowed().remove(userFollowed);
         userRepository.save(currentUser);
     }
 
     @Test
     public void follow_inexistantUser_shouldReturnNotFound() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions result = mockMvc.perform(
                 patch("/user/follow/{id}", 999999)
                         .header("Authorization",token)
@@ -134,8 +151,6 @@ public class UserTest {
 
     @Test
     public void unfollow_inexistantUser_shouldReturnNotFound() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions result = mockMvc.perform(
                 patch("/user/unfollow/{id}", 999999)
                         .header("Authorization",token)
@@ -147,10 +162,8 @@ public class UserTest {
 
     @Test
     public void follow_itself_shouldReturnBadRequest() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions result = mockMvc.perform(
-                patch("/user/follow/{id}", 13)
+                patch("/user/follow/{id}", connectedUser.getId())
                         .header("Authorization",token)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -160,10 +173,8 @@ public class UserTest {
 
     @Test
     public void unfollow_shouldReturnOk() throws Exception {
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         final ResultActions followResult = mockMvc.perform(
-                patch("/user/follow/{id}", 1)
+                patch("/user/follow/{id}", user1.getId())
                         .header("Authorization",token)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -171,7 +182,7 @@ public class UserTest {
         followResult.andExpect(status().isOk());
 
         final ResultActions unfollowResult = mockMvc.perform(
-                patch("/user/unfollow/{id}", 1)
+                patch("/user/unfollow/{id}", user1.getId())
                         .header("Authorization",token)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -189,10 +200,7 @@ public class UserTest {
         final ResultActions result = mockMvc.perform(
                 post("/user/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "\t\"username\": \"celia\",\n" +
-                                "\t\"password\": \"password\"\n" +
-                                "}")
+                        .content(mapper.writeValueAsString(new User("user1", "user1")))
         );
 
         result.andExpect(status().isConflict());
@@ -200,17 +208,11 @@ public class UserTest {
 
     @Test
     public void signUp_shouldReturnOk() throws Exception {
-
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
         // signup
         final ResultActions result = mockMvc.perform(
           post("/user/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "\t\"username\": \"temporary\",\n" +
-                        "\t\"password\": \"temporary\"\n" +
-                        "}")
+                .content(mapper.writeValueAsString(new User("temporary", "temporary")))
         );
 
         result.andExpect(status().isOk());
