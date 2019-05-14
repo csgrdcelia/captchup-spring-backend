@@ -20,7 +20,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> followed;
 
     public User() {}
