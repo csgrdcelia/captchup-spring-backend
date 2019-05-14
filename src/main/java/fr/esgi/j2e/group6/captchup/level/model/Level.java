@@ -2,19 +2,26 @@ package fr.esgi.j2e.group6.captchup.level.model;
 
 import fr.esgi.j2e.group6.captchup.user.model.User;
 
+import javax.persistence.*;
 import java.net.URL;
 import java.util.List;
 
+@Entity
 public class Level {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Integer id;
+
     private User creator;
 
     private URL image;
 
-    private List<String> answers;
+    @ManyToMany
+    private List<Answer> answers;
 
     public Level() { }
 
-    public Level(User creator, URL image, List<String> answers) {
+    public Level(User creator, URL image, List<Answer> answers) {
         this.creator = creator;
         this.image = image;
         this.answers = answers;
@@ -36,11 +43,19 @@ public class Level {
         this.image = image;
     }
 
-    public List<String> getAnswers() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public List<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<String> answers) {
+    public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
 }
