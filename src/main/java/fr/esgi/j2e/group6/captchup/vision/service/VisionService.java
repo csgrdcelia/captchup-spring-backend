@@ -10,6 +10,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,19 +19,12 @@ import java.util.List;
 public class VisionService {
 
     @Autowired
-    private ResourceLoader resourceLoader;
-
-    @Autowired
     private CloudVisionTemplate cloudVisionTemplate;
 
-    public List<EntityAnnotation> callAPI(String resourceName)
+    public List<EntityAnnotation> callAPI(MultipartFile resource)
     {
-        resourceLoader = new DefaultResourceLoader();
-        Resource imageResource = this.resourceLoader.getResource(resourceName);
-        AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(imageResource, Feature.Type.LABEL_DETECTION);
+        AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(resource.getResource(), Feature.Type.LABEL_DETECTION);
 
         return response.getLabelAnnotationsList();
-
-
     }
 }
