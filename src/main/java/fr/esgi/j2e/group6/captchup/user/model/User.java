@@ -2,6 +2,7 @@ package fr.esgi.j2e.group6.captchup.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@JsonSerialize(using = UserSerializer.class)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
