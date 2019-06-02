@@ -1,13 +1,76 @@
 package fr.esgi.j2e.group6.captchup.level.service;
 
+import com.google.cloud.vision.v1.EntityAnnotation;
+import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.model.LevelPrediction;
+import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
+import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
+import fr.esgi.j2e.group6.captchup.user.model.User;
+import fr.esgi.j2e.group6.captchup.vision.service.VisionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.Convert;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LevelService {
+
+    @Autowired
     private LevelRepository levelRepository;
 
-    public LevelService(LevelRepository levelRepository) {
-        this.levelRepository = levelRepository;
+    @Autowired
+    private PredictionRepository predictionRepository;
+
+    @Autowired
+    private VisionService visionService;
+
+
+    /**
+     * @return level if created, null if not
+     */
+    public Level createLevel(MultipartFile multipartFile, User user) throws MalformedURLException {
+
+        List<EntityAnnotation> annotations = visionService.callAPI(multipartFile);
+
+        List<LevelPrediction> levelPredictions = getFirstThreePredictions(annotations);
+
+        if (levelPredictions != null) {
+            //TODO: save image and get image url
+            return levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
+        }
+
+        return null;
+    }
+
+    public List<LevelPrediction> getFirstThreePredictions(List<EntityAnnotation> annotations) {
+        if(annotations.size() > 3) {
+
+            List<Prediction> predictions = predictionRepository.findAll();
+            List<LevelPrediction> levelPredictions = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+
+                Prediction prediction = getPrediction(annotations, predictions, i);
+                levelPredictions.add(new LevelPrediction(prediction, (double)annotations.get(i).getScore()));
+            }
+            return levelPredictions;
+        }
+        return null;
+    }
+
+    public Prediction getPrediction(List<EntityAnnotation> annotations, List<Prediction> predictions, int predictionNumber) {
+        Prediction prediction = new Prediction(annotations.get(predictionNumber).getDescription());
+        int predictionIndex = predictions.indexOf(prediction);
+        if(predictionIndex != -1) {
+            prediction = predictions.get(predictionIndex);
+        } else {
+            prediction = predictionRepository.save(prediction);
+        }
+        return prediction;
     }
 }

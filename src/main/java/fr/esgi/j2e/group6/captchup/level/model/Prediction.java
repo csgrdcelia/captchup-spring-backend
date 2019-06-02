@@ -2,6 +2,7 @@ package fr.esgi.j2e.group6.captchup.level.model;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -16,6 +17,20 @@ public class Prediction {
     private Set<LevelPrediction> levelPredictions = new HashSet<>();
 
     public Prediction() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Prediction that = (Prediction) o;
+        return word.equals(that.word);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(word);
+    }
+
     public Prediction(String word) {
         this.word = word;
     }

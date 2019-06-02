@@ -7,12 +7,12 @@ import java.util.Objects;
 @Entity
 public class LevelPrediction implements Serializable {
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Level level;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Prediction prediction;
 
