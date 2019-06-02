@@ -1,9 +1,13 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
 import fr.esgi.j2e.group6.captchup.user.model.User;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,9 +18,6 @@ public class Level {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
-    private String name;
-
     @OneToOne
     private User creator;
 
@@ -24,15 +25,22 @@ public class Level {
 
     public Level() { }
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
-    private Set<LevelPrediction> levelPredictions;
+    private List<LevelPrediction> levelPredictions;
 
-    public Level(String name, URL image, User creator, LevelPrediction... levelPredictions) {
-        this.name = name;
+    public Level(URL image, User creator, LevelPrediction... levelPredictions) {
         this.image = image;
         this.creator = creator;
         for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
-        this.levelPredictions = Stream.of(levelPredictions).collect(Collectors.toSet());
+        this.levelPredictions = Stream.of(levelPredictions).collect(Collectors.toList());
+    }
+
+    public Level(URL image, User creator, List<LevelPrediction> levelPredictions) {
+        this.image = image;
+        this.creator = creator;
+        for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
+        this.levelPredictions = levelPredictions;
     }
 
     public int getId() {
@@ -43,19 +51,11 @@ public class Level {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<LevelPrediction> getLevelPredictions() {
+    public List<LevelPrediction> getLevelPredictions() {
         return levelPredictions;
     }
 
-    public void setLevelPredictions(Set<LevelPrediction> levelPredictions) {
+    public void setLevelPredictions(List<LevelPrediction> levelPredictions) {
         this.levelPredictions = levelPredictions;
     }
 }

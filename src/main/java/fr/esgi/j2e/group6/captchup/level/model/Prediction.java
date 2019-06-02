@@ -15,6 +15,7 @@ public class Prediction {
     @OneToMany(mappedBy = "prediction", cascade = CascadeType.ALL)
     private Set<LevelPrediction> levelPredictions = new HashSet<>();
 
+    public Prediction() {}
     public Prediction(String word) {
         this.word = word;
     }

@@ -31,14 +31,14 @@ public class LevelPrediction implements Serializable {
         if (this == o) return true;
         if (!(o instanceof LevelPrediction)) return false;
         LevelPrediction that = (LevelPrediction) o;
-        return Objects.equals(level.getName(), that.level.getName()) &&
+        return Objects.equals(level.getId(), that.level.getId()) &&
                 Objects.equals(prediction.getWord(), that.prediction.getWord()) &&
                 Objects.equals(pertinence, that.pertinence);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level.getName(), prediction.getWord(), pertinence);
+        return Objects.hash(level.getId(), prediction.getWord(), pertinence);
     }
 
     public Level getLevel() {

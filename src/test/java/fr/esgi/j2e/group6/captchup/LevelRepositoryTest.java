@@ -43,58 +43,24 @@ public class LevelRepositoryTest {
     }
 
     @Test
-    public void TEST() throws MalformedURLException {
-        Prediction publisherA = new Prediction("Prediction A");
-        Prediction publisherB = new Prediction("Prediction B");
-        predictionRepository.saveAll(Arrays.asList(publisherA, publisherB));
-
-        levelRepository.save(new Level("Level 1",new URL("http://www.google.com"), user, new LevelPrediction(publisherA, 90.0), new LevelPrediction(publisherB, 91.0)));
-        levelRepository.save(new Level("Level 2", new URL("http://www.google.com"), user, new LevelPrediction(publisherA, 87.0)));
-    }
-
-    /*@Test
-    public void shouldCreatePredictions() {
-        predictionRepository.saveAll(getPredictionList());
-
-        Iterable<Prediction> predictionsIterator = predictionRepository.findAll();
-        predictionRepository.deleteAll();
-
-        assert(((Collection<?>)predictionsIterator).size() == 2);
-    }
-
-    @Test
     public void shouldCreateLevel() throws MalformedURLException {
+        Prediction predictionA = new Prediction("Prediction A");
+        Prediction predictionB = new Prediction("Prediction B");
+        predictionRepository.saveAll(Arrays.asList(predictionA, predictionB));
 
-        predictionRepository.saveAll(getPredictionList());
+        List<LevelPrediction> levelPredictions = new ArrayList<>();
+        levelPredictions.add(new LevelPrediction(predictionA, 90.0));
+        levelPredictions.add(new LevelPrediction(predictionB, 91.0));
 
-        Iterable<Prediction> predictionsIterable = predictionRepository.findAll();
+        levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
 
-        List<Prediction> predictions = new ArrayList<>();
+        List<Level> levels = levelRepository.findAll();
+        assert(levels.size() == 1);
+        assert(levels.get(0).getLevelPredictions().get(0).getPrediction().getWord().equals("Prediction A"));
+        assert(levels.get(0).getLevelPredictions().get(0).getPertinence().equals(90.0));
+        assert(levels.get(0).getLevelPredictions().get(1).getPrediction().getWord().equals("Prediction B"));
+        assert(levels.get(0).getLevelPredictions().get(1).getPertinence().equals(91.0));
 
-        predictionsIterable.forEach(predictions::add);
-
-        LevelPrediction levelPrediction1 = new LevelPrediction(predictions.get(0), 90.0);
-        LevelPrediction levelPrediction2 = new LevelPrediction(predictions.get(1), 95.0);
-
-        Level level = new Level("level",user, new URL("http://www.google.com"), levelPrediction1, levelPrediction2);
-
-        levelRepository.save(level);
         levelRepository.deleteAll();
     }
-
-    public List<Prediction> getPredictionList() {
-        List<Prediction> predictions = new ArrayList<>();
-        predictions.add(new Prediction("ciel"));
-        predictions.add(new Prediction("bleu"));
-        return predictions;
-    }
-
-    public List<LevelPrediction> getLevelPredictionList() {
-        List<Prediction> predictionList = getPredictionList();
-        List<LevelPrediction> levelPredictionList = new ArrayList<>();
-        levelPredictionList.add(new LevelPrediction(predictionList.get(0), 90.0));
-        levelPredictionList.add(new LevelPrediction(predictionList.get(1), 95.0));
-        return levelPredictionList;
-    }*/
-
 }
