@@ -1,8 +1,8 @@
 package fr.esgi.j2e.group6.captchup.user.model;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.springframework.context.annotation.Lazy;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@JsonSerialize(using = UserSerializer.class)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -21,8 +22,21 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToMany
-    private List<User> followed;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_follow",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private List<User> follow;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_follow",
+            joinColumns = @JoinColumn(name = "followed_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> followedBy;
 
     public User() {}
 
@@ -31,10 +45,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(String username, String password, List<User> followedUsers) {
+    public User(String username, String password, List<User> followedUsers, List<User> followedByUsers) {
         this.username = username;
         this.password = password;
-        this.followed = followedUsers;
+        this.follow = followedUsers;
+        this.followedBy = followedByUsers;
     }
 
     public Integer getId() {
@@ -48,6 +63,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -61,39 +77,21 @@ public class User implements UserDetails {
     }
 
     @JsonIgnore
-    public List<User> getFollowed() {
-        return followed;
+    public List<User> getFollow() {
+        return follow;
     }
 
-    public void setFollowed(List<User> followed) {
-        this.followed = followed;
+    public void setFollow(List<User> follow) {
+        this.follow = follow;
     }
 
-    // UserDetails methods
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    @JsonIgnore
+    public List<User> getFollowedBy() {
+        return followedBy;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public void setFollowedBy(List<User> followedBy) {
+        this.followedBy = followedBy;
     }
 
     @Override
@@ -104,11 +102,45 @@ public class User implements UserDetails {
         return Objects.equals(id, user.id) &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
-                Objects.equals(followed, user.followed);
+                Objects.equals(follow, user.follow) &&
+                Objects.equals(followedBy, user.followedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, followed);
+        return Objects.hash(id, username, password, follow, followedBy);
     }
+
+    // UserDetails methods
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
 }

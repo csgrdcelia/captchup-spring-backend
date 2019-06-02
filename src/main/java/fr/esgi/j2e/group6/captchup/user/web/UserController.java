@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,25 +41,52 @@ public class UserController {
     }
 
     @GetMapping(path="/{id}")
-    public @ResponseBody User getUserById(@PathVariable("id") int id) {
-        //return userRepository.findById(id);
-        User result = userRepository.findById(id).get();
+    public @ResponseBody ResponseEntity<User> getUserById(@PathVariable("id") int id) {
+        Optional<User> user = userRepository.findById(id);
 
-        System.out.println(result);
+        if(!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
 
-        return result;
+        return ResponseEntity.status(HttpStatus.OK).body(user.get());
     }
+
+    /*
+    @DeleteMapping(path = "/delete/{id}")
+    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        userRepository.delete(user.get());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+     */
 
     @DeleteMapping(path = "/delete/{id}")
-    public @ResponseBody void deleteUser(@PathVariable("id") int id) {
-        userRepository.deleteById(id);
+    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
+        try {
+            userService.deleteUser(id);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(path="/sign-up")
-    public @ResponseBody User signUp(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public ResponseEntity<User> signUp(@RequestBody User user) {
+        User foundUser = userRepository.findByUsername(user.getUsername());
+        if(foundUser == null) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            return ResponseEntity.status(HttpStatus.OK).body(userRepository.save(user));
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
     }
 
     @PatchMapping(path = "/follow/{id}")
@@ -79,7 +108,7 @@ public class UserController {
     public ResponseEntity<User> unfollowUser(@PathVariable("id") int id) {
         User user;
         try {
-            user = userService.unfollowUser(userRepository.findById(id));
+            user = userService.unfollowUser(userService.getCurrentLoggedInUser(), userRepository.findById(id));
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (AccessDeniedException e) {

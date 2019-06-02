@@ -3,14 +3,11 @@ package fr.esgi.j2e.group6.captchup.user.service;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import javassist.NotFoundException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
@@ -48,8 +45,8 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException();
         }
 
-        if(!loggedUser.getFollowed().contains(userToFollow.get())) {
-            loggedUser.getFollowed().add(userToFollow.get());
+        if(!loggedUser.getFollow().contains(userToFollow.get())) {
+            loggedUser.getFollow().add(userToFollow.get());
             userRepository.save(loggedUser);
         }
 
@@ -62,22 +59,34 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public User unfollowUser(Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {
-        User loggedUser = getCurrentLoggedInUser();
-
+    public User unfollowUser(User activeUser, Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {
         if(!userToUnfollow.isPresent()) {
             throw new NotFoundException("User to unfollow doesn't exists.");
         }
 
-        if(loggedUser == null) {
+        if(activeUser == null) {
             throw new AccessDeniedException("You need to be connected.");
         }
 
-        if(loggedUser.getFollowed().contains(userToUnfollow.get())) {
-            loggedUser.getFollowed().remove(userToUnfollow.get());
-            userRepository.save(loggedUser);
+        if(activeUser.getFollow().contains(userToUnfollow.get())) {
+            activeUser.getFollow().remove(userToUnfollow.get());
+            userRepository.save(activeUser);
         }
 
-        return loggedUser;
+        return activeUser;
+    }
+
+    public void deleteUser(int id) throws NotFoundException, AccessDeniedException {
+        Optional<User> user = userRepository.findById(id);
+        if(!user.isPresent()) {
+            throw new NotFoundException("User with id '" + id + "' doesn't exist.");
+        }
+
+        for (User follower: user.get().getFollowedBy()) {
+            unfollowUser(follower, user);
+            userRepository.save(follower);
+        }
+
+        userRepository.delete(user.get());
     }
 }
