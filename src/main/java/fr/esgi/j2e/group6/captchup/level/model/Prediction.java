@@ -1,33 +1,29 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 public class Prediction {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String word;
 
     @OneToMany(mappedBy = "prediction", cascade = CascadeType.ALL)
-    private Set<LevelPrediction> predictions = new HashSet<>();
-
-    public Prediction() { }
+    private Set<LevelPrediction> levelPredictions = new HashSet<>();
 
     public Prediction(String word) {
         this.word = word;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -37,5 +33,13 @@ public class Prediction {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public Set<LevelPrediction> getLevelPredictions() {
+        return levelPredictions;
+    }
+
+    public void setLevelPredictions(Set<LevelPrediction> levelPredictions) {
+        this.levelPredictions = levelPredictions;
     }
 }

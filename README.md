@@ -11,7 +11,7 @@ Create a user to log in the application.
 Call the route `localhost:5000/user/sign-up` with data of the user you want to create
 ```json
 {
-  "username": "name",
+  "username": "word",
   "password": "pass"
 }
 ```
@@ -23,7 +23,7 @@ Log in the application to be able to call any route
 Call the route `localhost:5000/login` with data of the user you want to log in as.
 ```json
 {
-  "username": "name",
+  "username": "word",
   "password": "pass"
 }
 ```

@@ -1,9 +1,6 @@
 package fr.esgi.j2e.group6.captchup;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.esgi.j2e.group6.captchup.level.model.Level;
-import fr.esgi.j2e.group6.captchup.level.model.LevelPrediction;
-import fr.esgi.j2e.group6.captchup.level.model.Prediction;
+import fr.esgi.j2e.group6.captchup.level.model.*;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
@@ -13,17 +10,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CaptchupApplication.class)
@@ -51,6 +43,16 @@ public class LevelRepositoryTest {
     }
 
     @Test
+    public void TEST() throws MalformedURLException {
+        Prediction publisherA = new Prediction("Prediction A");
+        Prediction publisherB = new Prediction("Prediction B");
+        predictionRepository.saveAll(Arrays.asList(publisherA, publisherB));
+
+        levelRepository.save(new Level("Level 1",new URL("http://www.google.com"), user, new LevelPrediction(publisherA, 90.0), new LevelPrediction(publisherB, 91.0)));
+        levelRepository.save(new Level("Level 2", new URL("http://www.google.com"), user, new LevelPrediction(publisherA, 87.0)));
+    }
+
+    /*@Test
     public void shouldCreatePredictions() {
         predictionRepository.saveAll(getPredictionList());
 
@@ -65,7 +67,16 @@ public class LevelRepositoryTest {
 
         predictionRepository.saveAll(getPredictionList());
 
-        Level level = new Level(user, new URL("http://www.google.com"), getLevelPredictionList().get(0), getLevelPredictionList().get(1));
+        Iterable<Prediction> predictionsIterable = predictionRepository.findAll();
+
+        List<Prediction> predictions = new ArrayList<>();
+
+        predictionsIterable.forEach(predictions::add);
+
+        LevelPrediction levelPrediction1 = new LevelPrediction(predictions.get(0), 90.0);
+        LevelPrediction levelPrediction2 = new LevelPrediction(predictions.get(1), 95.0);
+
+        Level level = new Level("level",user, new URL("http://www.google.com"), levelPrediction1, levelPrediction2);
 
         levelRepository.save(level);
         levelRepository.deleteAll();
@@ -84,6 +95,6 @@ public class LevelRepositoryTest {
         levelPredictionList.add(new LevelPrediction(predictionList.get(0), 90.0));
         levelPredictionList.add(new LevelPrediction(predictionList.get(1), 95.0));
         return levelPredictionList;
-    }
+    }*/
 
 }

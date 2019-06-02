@@ -11,7 +11,7 @@
     <groupId>fr.esgi.j2e.group6</groupId>
     <artifactId>captchup</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>captchup</name>
+    <word>captchup</word>
     <description>Captchup API</description>
 
     <properties>

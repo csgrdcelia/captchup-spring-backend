@@ -18,7 +18,8 @@ public class LevelPrediction implements Serializable {
 
     private Double pertinence;
 
-    public LevelPrediction() { }
+    public LevelPrediction() {
+    }
 
     public LevelPrediction(Prediction prediction, Double pertinence) {
         this.prediction = prediction;
@@ -30,14 +31,14 @@ public class LevelPrediction implements Serializable {
         if (this == o) return true;
         if (!(o instanceof LevelPrediction)) return false;
         LevelPrediction that = (LevelPrediction) o;
-        return Objects.equals(level.getId(), that.level.getId()) &&
-                Objects.equals(prediction.getId(), that.prediction.getId()) &&
+        return Objects.equals(level.getName(), that.level.getName()) &&
+                Objects.equals(prediction.getWord(), that.prediction.getWord()) &&
                 Objects.equals(pertinence, that.pertinence);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level.getId(), prediction.getId(), pertinence);
+        return Objects.hash(level.getName(), prediction.getWord(), pertinence);
     }
 
     public Level getLevel() {
@@ -64,3 +65,4 @@ public class LevelPrediction implements Serializable {
         this.pertinence = pertinence;
     }
 }
+
