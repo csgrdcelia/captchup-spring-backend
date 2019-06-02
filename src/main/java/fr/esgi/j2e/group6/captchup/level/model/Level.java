@@ -4,27 +4,34 @@ import fr.esgi.j2e.group6.captchup.user.model.User;
 
 import javax.persistence.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class Level {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @OneToOne
     private User creator;
 
     private URL image;
 
-    @OneToMany(mappedBy = "level")
-    private List<LevelAnswer> answers;
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
+    private Set<LevelPrediction> predictions = new HashSet<>();
 
     public Level() { }
 
-    public Level(User creator, URL image, List<LevelAnswer> answers) {
+    public Level(User creator, URL image, LevelPrediction... bookPublishers) {
         this.creator = creator;
         this.image = image;
-        this.answers = answers;
+        for(LevelPrediction bookPublisher : bookPublishers) bookPublisher.setLevel(this);
+        this.predictions = Stream.of(bookPublishers).collect(Collectors.toSet());
     }
 
     public User getCreator() {
@@ -51,11 +58,11 @@ public class Level {
         this.id = id;
     }
 
-    public List<LevelAnswer> getAnswers() {
-        return answers;
+    public Set<LevelPrediction> getPredictions() {
+        return predictions;
     }
 
-    public void setAnswers(List<LevelAnswer> answers) {
-        this.answers = answers;
+    public void setPredictions(Set<LevelPrediction> predictions) {
+        this.predictions = predictions;
     }
 }
