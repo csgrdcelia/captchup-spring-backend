@@ -1,10 +1,13 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 public class Prediction {
     @Id
@@ -13,8 +16,8 @@ public class Prediction {
 
     private String word;
 
-    @OneToMany(mappedBy = "prediction", cascade = CascadeType.ALL)
-    private Set<LevelPrediction> levelPredictions = new HashSet<>();
+    /*@OneToMany(mappedBy = "prediction", cascade = CascadeType.ALL)
+    private Set<LevelPrediction> levelPredictions = new HashSet<>();*/
 
     public Prediction() {}
 
@@ -51,11 +54,12 @@ public class Prediction {
         this.word = word;
     }
 
+    /*
     public Set<LevelPrediction> getLevelPredictions() {
         return levelPredictions;
     }
 
     public void setLevelPredictions(Set<LevelPrediction> levelPredictions) {
         this.levelPredictions = levelPredictions;
-    }
+    }*/
 }

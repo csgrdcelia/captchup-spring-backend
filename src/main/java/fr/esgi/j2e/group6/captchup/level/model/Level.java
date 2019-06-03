@@ -52,6 +52,22 @@ public class Level {
         this.id = id;
     }
 
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public URL getImage() {
+        return image;
+    }
+
+    public void setImage(URL image) {
+        this.image = image;
+    }
+
     public List<LevelPrediction> getLevelPredictions() {
         return levelPredictions;
     }

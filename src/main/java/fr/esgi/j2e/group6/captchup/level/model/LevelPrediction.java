@@ -1,5 +1,7 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -11,6 +13,7 @@ public class LevelPrediction implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
+    @JsonBackReference
     private Level level;
 
     @Id

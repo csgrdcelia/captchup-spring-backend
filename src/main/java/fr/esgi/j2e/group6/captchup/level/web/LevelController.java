@@ -45,7 +45,7 @@ public class LevelController {
         try {
             User user = userService.getCurrentLoggedInUser();
             Level level = levelService.createLevel(image, user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(level);
         } catch (MalformedURLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
