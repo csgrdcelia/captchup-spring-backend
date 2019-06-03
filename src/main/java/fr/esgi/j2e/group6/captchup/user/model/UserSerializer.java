@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.util.List;
 
 public class UserSerializer extends StdSerializer {
     public UserSerializer() {
@@ -30,25 +31,39 @@ public class UserSerializer extends StdSerializer {
     private void serializeSingleUser(User user, JsonGenerator jsonGenerator, int depth) throws IOException {
         jsonGenerator.writeStartObject();
 
-        jsonGenerator.writeNumberField("id", user.getId());
+        if(user.getId() == null) {
+            jsonGenerator.writeNullField("id");
+        }else{
+            jsonGenerator.writeNumberField("id", user.getId());
+        }
         jsonGenerator.writeStringField("username", user.getUsername());
+        jsonGenerator.writeStringField("password", user.getPassword());
 
         jsonGenerator.writeArrayFieldStart("follow");
-        for(User follow: user.getFollow()) {
-            if(depth > 2) {
-                jsonGenerator.writeNumber(follow.getId());
-            }else{
-                serializeSingleUser(follow, jsonGenerator, depth + 1);
+
+        List<User> followUser = user.getFollow();
+        if(followUser != null) {
+            for(User follow: followUser) {
+                if(depth > 2) {
+                    jsonGenerator.writeNumber(follow.getId());
+                }else{
+                    serializeSingleUser(follow, jsonGenerator, depth + 1);
+                }
             }
         }
+
         jsonGenerator.writeEndArray();
 
         jsonGenerator.writeArrayFieldStart("followedBy");
-        for(User followedBy: user.getFollowedBy()) {
-            if(depth > 2) {
-                jsonGenerator.writeNumber(followedBy.getId());
-            }else{
-                serializeSingleUser(followedBy, jsonGenerator, depth + 1);
+
+        List<User> followedByUser = user.getFollowedBy();
+        if(followedByUser != null) {
+            for(User followedBy: followedByUser) {
+                if(depth > 2) {
+                    jsonGenerator.writeNumber(followedBy.getId());
+                }else{
+                    serializeSingleUser(followedBy, jsonGenerator, depth + 1);
+                }
             }
         }
         jsonGenerator.writeEndArray();
