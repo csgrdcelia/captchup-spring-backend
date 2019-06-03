@@ -5,6 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Level {
     public Level() { }
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "level", cascade = CascadeType.ALL )
     private List<LevelPrediction> levelPredictions;
 
     public Level(URL image, User creator, LevelPrediction... levelPredictions) {

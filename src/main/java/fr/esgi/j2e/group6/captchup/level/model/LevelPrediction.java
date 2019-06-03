@@ -1,10 +1,12 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@Transactional
 public class LevelPrediction implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)

@@ -43,7 +43,7 @@ public class UserTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void before() throws Exception {
         mapper = new ObjectMapper();
         jsonParser = new JacksonJsonParser();
 
