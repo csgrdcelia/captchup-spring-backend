@@ -29,3 +29,6 @@ HELP.md
 .vscode/
 
 src/main/resources/application\.properties
+### Vision creds ###
+src/main/resources/captchup-vision-cred.json
+
