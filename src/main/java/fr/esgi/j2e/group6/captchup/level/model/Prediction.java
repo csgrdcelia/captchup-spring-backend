@@ -62,4 +62,12 @@ public class Prediction {
     public void setLevelPredictions(Set<LevelPrediction> levelPredictions) {
         this.levelPredictions = levelPredictions;
     }*/
+
+    @Override
+    public String toString() {
+        return "Prediction{" +
+                "id=" + id +
+                ", word='" + word + '\'' +
+                '}';
+    }
 }
