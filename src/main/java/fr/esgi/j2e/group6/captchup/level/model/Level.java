@@ -7,22 +7,22 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
 public class Level {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @OneToOne
     private User creator;
 
     private URL image;
+
+    private int difficulty;
 
     public Level() { }
 
@@ -42,6 +42,7 @@ public class Level {
         this.creator = creator;
         for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
         this.levelPredictions = levelPredictions;
+        this.difficulty = difficultyFromPredictions();
     }
 
     public int getId() {
@@ -75,6 +76,32 @@ public class Level {
     public void setLevelPredictions(List<LevelPrediction> levelPredictions) {
         this.levelPredictions = levelPredictions;
     }
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int difficultyFromPredictions(){
+        List<Double> pertinence = new ArrayList<>();
+        for (LevelPrediction levelPrediction : this.levelPredictions) {
+            pertinence.add(levelPrediction.getPertinence());
+        }
+        OptionalDouble average = pertinence.stream().mapToDouble(a -> a).average();
+        Double doubleAverage = average.getAsDouble();
+        if(doubleAverage > 0.95){
+            return 1;
+        }
+        else if(doubleAverage > 0.90){
+            return 2;
+        }
+        else{
+            return 3;
+        }
+    }
+
 
     @Override
     public String toString() {
