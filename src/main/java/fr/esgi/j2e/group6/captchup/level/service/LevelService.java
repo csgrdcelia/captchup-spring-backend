@@ -2,21 +2,25 @@ package fr.esgi.j2e.group6.captchup.level.service;
 
 import com.google.cloud.vision.v1.EntityAnnotation;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
 import fr.esgi.j2e.group6.captchup.level.model.LevelPrediction;
 import fr.esgi.j2e.group6.captchup.level.model.Prediction;
+import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
+import fr.esgi.j2e.group6.captchup.user.service.UserService;
 import fr.esgi.j2e.group6.captchup.vision.service.VisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Convert;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LevelService {
@@ -29,6 +33,15 @@ public class LevelService {
 
     @Autowired
     private VisionService visionService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired private LevelService levelService;
+
+    @Autowired private PredictionService predictionService;
+
+    @Autowired LevelAnswerService levelAnswerService;
 
 
     /**
@@ -72,5 +85,44 @@ public class LevelService {
             prediction = predictionRepository.save(prediction);
         }
         return prediction;
+    }
+
+    public Optional<Level> getLevelById(Integer id) {
+        return levelRepository.findById(id);
+    }
+
+    public LevelAnswer solveLevel(Integer id, String answer) {
+        //User loggedInUser = userService.getCurrentLoggedInUser();
+        //Optional<Level> level = levelService.getLevelById(id);
+
+        LevelAnswer levelAnswer = new LevelAnswer(levelService.getLevelById(id).get(),
+                null,
+                userService.getCurrentLoggedInUser(),
+                answer);
+
+        levelAnswer.setPrediction(getMatchingLevelPredictionFromWord(id, answer));
+
+        Optional<LevelAnswer> existingLevelAnswer = levelAnswerService.findByUserAndLevelAndWord(
+                levelAnswer.getUser(), levelAnswer.getLevel(), levelAnswer.getWord()
+        );
+
+        if(!existingLevelAnswer.isPresent()) {
+            levelAnswer.setSubmittedDate(LocalDateTime.now());
+            levelAnswer = levelAnswerService.save(levelAnswer);
+        }
+
+        return levelAnswer;
+    }
+
+    private Prediction getMatchingLevelPredictionFromWord(Integer id, String word) {
+        List<Prediction> predictionList = predictionService.getPredictionsByLevelId(id);
+
+        for(Prediction prediction: predictionList) {
+            if(prediction.getWord().toLowerCase().equals(word.toLowerCase())) {
+                return prediction;
+            }
+        }
+
+        return null;
     }
 }
