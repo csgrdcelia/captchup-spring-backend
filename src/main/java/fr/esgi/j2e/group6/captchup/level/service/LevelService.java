@@ -1,5 +1,6 @@
 package fr.esgi.j2e.group6.captchup.level.service;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
@@ -91,9 +92,10 @@ public class LevelService {
         return levelRepository.findById(id);
     }
 
-    public LevelAnswer solveLevel(Integer id, String answer) {
-        //User loggedInUser = userService.getCurrentLoggedInUser();
-        //Optional<Level> level = levelService.getLevelById(id);
+    public LevelAnswer solveLevel(Integer id, String answer) throws IllegalArgumentException {
+        if(answer.equals("")) {
+            throw new IllegalArgumentException();
+        }
 
         LevelAnswer levelAnswer = new LevelAnswer(levelService.getLevelById(id).get(),
                 null,

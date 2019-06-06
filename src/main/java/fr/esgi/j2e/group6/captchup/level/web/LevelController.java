@@ -65,7 +65,13 @@ public class LevelController {
 
     @PostMapping(path = "/{id}/solve")
     public @ResponseBody ResponseEntity<LevelAnswer> solveLevel(@PathVariable("id") Integer id, @RequestParam("answer") String answer) {
-        LevelAnswer levelAnswer = levelService.solveLevel(id, answer);
+        LevelAnswer levelAnswer;
+
+        try {
+            levelAnswer = levelService.solveLevel(id, answer);
+        }catch(IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(levelAnswer);
     }
 }
