@@ -1,14 +1,15 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
-import com.google.api.client.util.DateTime;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 public class LevelAnswer implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
@@ -16,32 +17,43 @@ public class LevelAnswer implements Serializable {
     private Level level;
 
     @ManyToOne
+    /*
     @JoinColumns({
             @JoinColumn(name = "level_id", insertable=false, updatable=false, referencedColumnName = "level_id"),
             @JoinColumn(name = "prediction_id", insertable=false, updatable=false, referencedColumnName = "prediction_id")
-    })
-    private LevelPrediction levelPrediction;
+    })*/
+    @JoinColumn
+    private Prediction prediction;
 
     @ManyToOne
     @JoinColumn
     private User user;
 
-    private DateTime submittedDate;
+    private LocalDateTime submittedDate;
+
+    private String word;
 
     public LevelAnswer() {
     }
 
-    public LevelAnswer(Level level, LevelPrediction levelPrediction, User user, DateTime submittedDate) {
+    public LevelAnswer(Level level, Prediction prediction, User user, String word) {
         this.level = level;
-        this.levelPrediction = levelPrediction;
+        this.prediction = prediction;
+        this.user = user;
+        this.word = word;
+    }
+
+    public LevelAnswer(Level level, Prediction prediction, User user, LocalDateTime submittedDate) {
+        this.level = level;
+        this.prediction = prediction;
         this.user = user;
         this.submittedDate = submittedDate;
     }
 
-    public LevelAnswer(Integer id, Level level, LevelPrediction levelPrediction, User user, DateTime submittedDate) {
+    public LevelAnswer(Integer id, Level level, Prediction prediction, User user, LocalDateTime submittedDate) {
         this.id = id;
         this.level = level;
-        this.levelPrediction = levelPrediction;
+        this.prediction = prediction;
         this.user = user;
         this.submittedDate = submittedDate;
     }
@@ -62,12 +74,12 @@ public class LevelAnswer implements Serializable {
         this.level = level;
     }
 
-    public LevelPrediction getLevelPrediction() {
-        return levelPrediction;
+    public Prediction getPrediction() {
+        return prediction;
     }
 
-    public void setLevelPrediction(LevelPrediction levelPrediction) {
-        this.levelPrediction = levelPrediction;
+    public void setPrediction(Prediction prediction) {
+        this.prediction = prediction;
     }
 
     public User getUser() {
@@ -78,11 +90,31 @@ public class LevelAnswer implements Serializable {
         this.user = user;
     }
 
-    public DateTime getSubmittedDate() {
+    public LocalDateTime getSubmittedDate() {
         return submittedDate;
     }
 
-    public void setSubmittedDate(DateTime submittedDate) {
+    public void setSubmittedDate(LocalDateTime submittedDate) {
         this.submittedDate = submittedDate;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    @Override
+    public String toString() {
+        return "LevelAnswer{" +
+                "id=" + id +
+                ", level=" + level +
+                ", Prediction=" + prediction +
+                ", user=" + user +
+                ", submittedDate=" + submittedDate +
+                ", word=" + word +
+                '}';
     }
 }
