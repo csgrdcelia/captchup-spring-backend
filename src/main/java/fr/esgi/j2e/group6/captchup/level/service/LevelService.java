@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Convert;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -72,5 +71,9 @@ public class LevelService {
             prediction = predictionRepository.save(prediction);
         }
         return prediction;
+    }
+
+    public List<Level> getAllLevels() {
+        return levelRepository.findAll();
     }
 }
