@@ -33,9 +33,9 @@ public class StatisticController {
         return ResponseEntity.status(HttpStatus.OK).body(levelAnswers.size());
     }
 
-    @GetMapping(path = "/getNumberOfSolvedLevelsByUser")
+    @GetMapping(path = "/getNumberOfTestedLevelsByUser")
     public @ResponseBody
-    ResponseEntity<Integer> getNumberOfSolvedLevelsByUser() {
+    ResponseEntity<Integer> getNumberOfTestedLevelsByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
             List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswersById(user);
