@@ -75,4 +75,13 @@ public class Level {
     public void setLevelPredictions(List<LevelPrediction> levelPredictions) {
         this.levelPredictions = levelPredictions;
     }
+
+    @Override
+    public String toString() {
+        return "Level{" +
+                "id=" + id +
+                ", creator=" + creator +
+                ", image=" + image +
+                '}';
+    }
 }
