@@ -1,6 +1,8 @@
 package fr.esgi.j2e.group6.captchup.Statistic.web;
 
 import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
+import fr.esgi.j2e.group6.captchup.level.service.LevelAnswerService;
 import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +19,13 @@ import java.util.List;
 public class StatisticController {
 
     @Autowired
-    LevelService levelService;
+    LevelAnswerService levelAnswerService;
 
     @GetMapping(path = "/getNumberOfTestedLevels")
     public @ResponseBody
     ResponseEntity<Integer> getNumberOfTestedLevels() {
-        List<Level> levels = levelService.getAllLevels();
+        List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswers();
 
-        return ResponseEntity.status(HttpStatus.OK).body(levels.size());
+        return ResponseEntity.status(HttpStatus.OK).body(levelAnswers.size());
     }
 }

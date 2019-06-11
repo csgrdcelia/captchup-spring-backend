@@ -1,9 +1,7 @@
 package fr.esgi.j2e.group6.captchup.level.web;
 
-import com.google.api.client.util.DateTime;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
-import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.service.LevelAnswerService;
@@ -18,10 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.net.MalformedURLException;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
