@@ -26,4 +26,8 @@ public class LevelAnswerService {
     public List<LevelAnswer> getAllLevelAnswers() {
         return levelAnswerRepository.findAll();
     }
+
+    public List<LevelAnswer> getAllLevelAnswersById(User user) {
+        return levelAnswerRepository.findAllByUser(user);
+    }
 }
