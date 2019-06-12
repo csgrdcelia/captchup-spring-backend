@@ -20,5 +20,5 @@ public interface LevelAnswerRepository extends JpaRepository<LevelAnswer, Intege
                     "as finished_level_list",
             nativeQuery = true
     )
-    Integer getNumberOfFinishedLevel();
+    Integer numberOfSolvedLevels();
 }

@@ -32,7 +32,7 @@ public class LevelAnswerService {
         return levelAnswerRepository.findAllByUser(user);
     }
 
-    public Integer getAllSolvedLevelAnswers() {
-        return levelAnswerRepository.getNumberOfFinishedLevel();
+    public Integer getNumberOfSolvedLevels() {
+        return levelAnswerRepository.numberOfSolvedLevels();
     }
 }

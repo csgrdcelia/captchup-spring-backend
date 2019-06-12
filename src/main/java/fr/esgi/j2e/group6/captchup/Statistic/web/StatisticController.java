@@ -49,7 +49,7 @@ public class StatisticController {
     public @ResponseBody
     ResponseEntity<Integer> getNumberOfLevelSolved() {
         try {
-            Integer levelAnswersSolvedNumber = levelAnswerService.getAllSolvedLevelAnswers();
+            Integer levelAnswersSolvedNumber = levelAnswerService.getNumberOfSolvedLevels();
             return ResponseEntity.status(HttpStatus.OK).body(levelAnswersSolvedNumber);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
