@@ -35,4 +35,8 @@ public class LevelAnswerService {
     public Integer getNumberOfSolvedLevels() {
         return levelAnswerRepository.numberOfSolvedLevels();
     }
+
+    public Integer getNumberOfSolvedLevelsByUser(int id) {
+        return levelAnswerRepository.numberOfSolvedLevelsByUser(id);
+    }
 }

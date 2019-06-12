@@ -21,4 +21,12 @@ public interface LevelAnswerRepository extends JpaRepository<LevelAnswer, Intege
             nativeQuery = true
     )
     Integer numberOfSolvedLevels();
+
+    @Query(
+            value = "SELECT COUNT(nb) FROM(SELECT COUNT(id) as nb FROM level_answer " +
+                    "WHERE prediction_id IS NOT NULL AND user_id = ?1 GROUP BY level_id, user_id HAVING COUNT(*) = 3) " +
+                    "as finished_level_list",
+            nativeQuery = true
+    )
+    Integer numberOfSolvedLevelsByUser(int id);
 }

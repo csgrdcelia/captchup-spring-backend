@@ -55,4 +55,16 @@ public class StatisticController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping(path = "/getNumberOfSolvedLevelsByUser")
+    public @ResponseBody
+    ResponseEntity<Integer> getNumberOfSolvedLevelsByUser() {
+        try {
+            User user = userService.getCurrentLoggedInUser();
+            Integer levelAnswersSolvedNumber = levelAnswerService.getNumberOfSolvedLevelsByUser(user.getId());
+            return ResponseEntity.status(HttpStatus.OK).body(levelAnswersSolvedNumber);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
