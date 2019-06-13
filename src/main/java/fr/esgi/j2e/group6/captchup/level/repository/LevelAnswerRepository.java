@@ -32,7 +32,7 @@ public interface LevelAnswerRepository extends JpaRepository<LevelAnswer, Intege
     @Query(
             value = "SELECT (COUNT(level_answer.id) / COUNT(DISTINCT level_answer.user_id)) FROM (" +
                         "SELECT user_id FROM (" +
-                            "SELECT * FROM level_answer WHERE level_id = 1) as levels " +
+                            "SELECT * FROM level_answer WHERE level_id = ?1) as levels " +
                         "WHERE level_id = ?1 AND prediction_id IS NOT NULL " +
                         "GROUP BY user_id " +
                         "HAVING COUNT(*) = 3) as result " +
