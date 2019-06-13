@@ -5,6 +5,7 @@ import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +67,11 @@ public class LevelControllerTest {
         userRepository.delete(connectedUser);
     }
 
+    @Ignore("api isn't free")
     @Test
     public void shouldCreateLevel() throws Exception {
 
-        /*File file = new File("src/main/resources/test-image.jpg");
+        File file = new File("src/main/resources/test-image.jpg");
         FileInputStream input = new FileInputStream(file);
         MockMultipartFile multipartFile = new MockMultipartFile("image",
                 file.getName(), "image/jpeg", IOUtils.toByteArray(input));
@@ -78,7 +80,7 @@ public class LevelControllerTest {
         mockMvc .perform(MockMvcRequestBuilders.multipart("/level/create")
                         .file("image", multipartFile.getBytes())
                         .header("Authorization",token))
-                .andExpect(status().isCreated());*/
+                .andExpect(status().isCreated());
 
     }
 

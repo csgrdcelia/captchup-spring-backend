@@ -15,7 +15,26 @@ public class Config {
 
     private String value;
 
+    public Config() { }
+
+    public Config(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

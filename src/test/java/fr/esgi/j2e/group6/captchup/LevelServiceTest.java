@@ -9,6 +9,7 @@ import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CaptchupApplication.class)
 public class LevelServiceTest {
-    @Autowired
-    private LevelService levelService;
+    @Autowired private LevelService levelService;
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
-    @Autowired
-    LevelRepository levelRepository;
+    @Autowired LevelRepository levelRepository;
 
     User user;
+
     @Before
     public void before() {
         user = userRepository.save(new User("user1", "user1"));
@@ -46,15 +45,16 @@ public class LevelServiceTest {
         userRepository.delete(user);
     }
 
+    @Ignore("api isn't free")
     @Test
     public void shouldCreateLevel() throws IOException {
-        /*MultipartFile imageFile = getImageFile();
+        MultipartFile imageFile = getImageFile();
         Level level = levelService.createLevel(imageFile, user);
 
         assertThat(level != null);
         assertThat(level.getLevelPredictions().get(0).getPrediction().getWord()).isEqualTo("Cactus");
 
-        levelRepository.delete(level);*/
+        levelRepository.delete(level);
     }
 
     public MultipartFile getImageFile() throws IOException {

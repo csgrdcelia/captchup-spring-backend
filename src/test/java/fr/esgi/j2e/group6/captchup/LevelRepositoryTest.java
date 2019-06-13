@@ -28,14 +28,11 @@ import java.util.*;
 @SpringBootTest(classes = CaptchupApplication.class)
 public class LevelRepositoryTest {
 
-    @Autowired
-    private LevelRepository levelRepository;
+    @Autowired private LevelRepository levelRepository;
 
-    @Autowired
-    PredictionRepository predictionRepository;
+    @Autowired PredictionRepository predictionRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
     @PersistenceContext
     private EntityManager em;

@@ -38,11 +38,8 @@ import java.util.List;
 public class VisionServiceTest {
 
     @Autowired private VisionService visionService;
-
     @Autowired private ConfigRepository configRepository;
-
     @Autowired private UserRepository userRepository;
-
     @Autowired private LevelRepository levelRepository;
 
     private User user;
