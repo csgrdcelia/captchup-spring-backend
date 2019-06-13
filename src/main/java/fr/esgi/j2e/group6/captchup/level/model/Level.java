@@ -1,12 +1,16 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
+import com.google.api.client.util.DateTime;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import sun.util.resources.LocaleData;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,15 +28,18 @@ public class Level {
 
     private URL image;
 
-    public Level() { }
+    private LocalDate creationDate;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL )
     private List<LevelPrediction> levelPredictions;
 
+    public Level() { }
+
     public Level(URL image, User creator, LevelPrediction... levelPredictions) {
         this.image = image;
         this.creator = creator;
+        this.creationDate = LocalDate.now();
         for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
         this.levelPredictions = Stream.of(levelPredictions).collect(Collectors.toList());
     }
@@ -40,6 +47,7 @@ public class Level {
     public Level(URL image, User creator, List<LevelPrediction> levelPredictions) {
         this.image = image;
         this.creator = creator;
+        this.creationDate = LocalDate.now();
         for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
         this.levelPredictions = levelPredictions;
     }
