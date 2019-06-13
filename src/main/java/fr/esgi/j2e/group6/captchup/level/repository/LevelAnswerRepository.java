@@ -2,7 +2,6 @@ package fr.esgi.j2e.group6.captchup.level.repository;
 
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
-import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +28,18 @@ public interface LevelAnswerRepository extends JpaRepository<LevelAnswer, Intege
             nativeQuery = true
     )
     Integer numberOfSolvedLevelsByUser(int id);
+
+    @Query(
+            value = "SELECT (COUNT(level_answer.id) / COUNT(DISTINCT level_answer.user_id)) FROM (" +
+                        "SELECT user_id FROM (" +
+                            "SELECT * FROM level_answer WHERE level_id = 1) as levels " +
+                        "WHERE level_id = ?1 AND prediction_id IS NOT NULL " +
+                        "GROUP BY user_id " +
+                        "HAVING COUNT(*) = 3) as result " +
+                    "INNER JOIN level_answer " +
+                    "WHERE result.user_id = level_answer.user_id " +
+                    "AND level_answer.level_id = ?1",
+            nativeQuery = true
+    )
+    Double averageNumberOfAnswersAndCompletedLevels(int level_id);
 }

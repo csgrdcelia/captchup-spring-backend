@@ -2,7 +2,6 @@ package fr.esgi.j2e.group6.captchup.level.service;
 
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
-import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +37,9 @@ public class LevelAnswerService {
 
     public Integer getNumberOfSolvedLevelsByUser(int id) {
         return levelAnswerRepository.numberOfSolvedLevelsByUser(id);
+    }
+
+    public Double getAverageNumberOfAnswersPerCompletedLevels(int id) {
+        return levelAnswerRepository.averageNumberOfAnswersAndCompletedLevels(id);
     }
 }
