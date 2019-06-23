@@ -1,8 +1,14 @@
 package fr.esgi.j2e.group6.captchup.level.web;
 
+import com.google.api.client.util.DateTime;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
+import fr.esgi.j2e.group6.captchup.level.model.Prediction;
+import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
+import fr.esgi.j2e.group6.captchup.level.service.LevelAnswerService;
 import fr.esgi.j2e.group6.captchup.level.service.LevelService;
+import fr.esgi.j2e.group6.captchup.level.service.PredictionService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
 import fr.esgi.j2e.group6.captchup.vision.service.VisionService;
@@ -25,6 +31,9 @@ public class LevelController {
     @Autowired LevelService levelService;
     @Autowired UserService userService;
     @Autowired VisionService visionService;
+    @Autowired PredictionService predictionService;
+    @Autowired LevelAnswerRepository levelAnswerRepository;
+    @Autowired LevelAnswerService levelAnswerService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/all")
@@ -57,5 +66,17 @@ public class LevelController {
         } catch (MalformedURLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @PostMapping(path = "/{id}/solve")
+    public @ResponseBody ResponseEntity<LevelAnswer> solveLevel(@PathVariable("id") Integer id, @RequestParam("answer") String answer) {
+        LevelAnswer levelAnswer;
+
+        try {
+            levelAnswer = levelService.solveLevel(id, answer);
+        }catch(IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(levelAnswer);
     }
 }

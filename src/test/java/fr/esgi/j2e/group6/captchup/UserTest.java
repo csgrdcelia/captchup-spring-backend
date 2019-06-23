@@ -203,17 +203,6 @@ public class UserTest {
     }
 
     @Test
-    public void signUp_withExistingUsername_shouldReturnConflict() throws Exception {
-        final ResultActions result = mockMvc.perform(
-                post("/user/sign-up")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(new User("user1", "user1")))
-        );
-
-        result.andExpect(status().isConflict());
-    }
-
-    @Test
     public void signUp_shouldReturnOk() throws Exception {
         // signup
         final ResultActions result = mockMvc.perform(
