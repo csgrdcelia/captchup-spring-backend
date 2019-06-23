@@ -1,19 +1,13 @@
 package fr.esgi.j2e.group6.captchup.level.model;
 
-import com.google.api.client.util.DateTime;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import sun.util.resources.LocaleData;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
