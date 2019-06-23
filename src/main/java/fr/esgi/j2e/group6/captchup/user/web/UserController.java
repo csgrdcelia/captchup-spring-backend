@@ -104,4 +104,9 @@ public class UserController {
     public @ResponseBody Iterable<Level> getFinishedLevelsBy(@PathVariable("id") int id) {
         return levelRepository.findFinishedLevelsBy(id);
     }
+
+    @GetMapping(path = "/{id}/level/unfinished")
+    public @ResponseBody Iterable<Level> getUnfinishedLevelsBy(@PathVariable("id") int id) {
+        return levelRepository.findUnfinishedLevelsBy(id);
+    }
 }

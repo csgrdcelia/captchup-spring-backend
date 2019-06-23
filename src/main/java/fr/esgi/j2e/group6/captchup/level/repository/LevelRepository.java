@@ -25,4 +25,17 @@ public interface LevelRepository extends JpaRepository<Level, Integer> {
     )
     List<Level> findFinishedLevelsBy(int userId);
 
+    @Query(
+            value = "SELECT * FROM level as L " +
+                    "WHERE L.id in \t(\tSELECT level_id FROM level_answer " +
+                    "WHERE prediction_id IS NOT NULL " +
+                    "AND user_id = ?1 " +
+                    "GROUP BY level_id " +
+                    "HAVING COUNT(*) != 3 );",
+            nativeQuery = true
+    )
+    List<Level> findUnfinishedLevelsBy(int userId);
+
+
+
 }
