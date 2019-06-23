@@ -8,6 +8,7 @@ import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import org.hibernate.Hibernate;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,20 +21,18 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = CaptchupApplication.class)
 public class LevelRepositoryTest {
 
-    @Autowired
-    private LevelRepository levelRepository;
+    @Autowired private LevelRepository levelRepository;
 
-    @Autowired
-    PredictionRepository predictionRepository;
+    @Autowired PredictionRepository predictionRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -48,6 +47,7 @@ public class LevelRepositoryTest {
     @After
     public void after() {
         userRepository.delete(user);
+
     }
 
     @Transactional
@@ -75,5 +75,20 @@ public class LevelRepositoryTest {
         assert(foundLevel.getLevelPredictions().get(1).getPertinence().equals(91.0));
 
         levelRepository.delete(foundLevel);
+    }
+
+    @Test
+    public void findLevelsByCreationDateAndCreator_shouldReturn2() throws MalformedURLException {
+        Level level1 = new Level(new URL("http://www.image1.com"), user, new ArrayList<LevelPrediction>());
+        Level level2 = new Level(new URL("http://www.image2.com"), user, new ArrayList<LevelPrediction>());
+        levelRepository.save(level1);
+        levelRepository.save(level2);
+
+        int createdLevelsToday = levelRepository.findByCreationDateAndCreator(LocalDate.now(), user).size();
+
+        levelRepository.delete(level1);
+        levelRepository.delete(level2);
+
+        assert(createdLevelsToday == 2);
     }
 }

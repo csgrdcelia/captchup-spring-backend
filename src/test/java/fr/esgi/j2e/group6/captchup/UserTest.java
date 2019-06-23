@@ -279,7 +279,4 @@ public class UserTest {
     public void deleteUser(String username) {
         userRepository.delete(userRepository.findByUsername(username));
     }
-
-
-
 }

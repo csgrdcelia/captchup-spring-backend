@@ -5,6 +5,7 @@ import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
+import fr.esgi.j2e.group6.captchup.vision.service.VisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Controller
@@ -22,6 +24,7 @@ public class LevelController {
     @Autowired LevelRepository levelRepository;
     @Autowired LevelService levelService;
     @Autowired UserService userService;
+    @Autowired VisionService visionService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/all")
@@ -42,8 +45,13 @@ public class LevelController {
 
     @PostMapping(path = "/create")
     public @ResponseBody ResponseEntity<Level> createLevel(@RequestBody MultipartFile image) {
+        User user = userService.getCurrentLoggedInUser();
+
+        if(visionService.maxAmountOfCallsIsReached(LocalDate.now(), user)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(null);
+        }
+
         try {
-            User user = userService.getCurrentLoggedInUser();
             Level level = levelService.createLevel(image, user);
             return ResponseEntity.status(HttpStatus.CREATED).body(level);
         } catch (MalformedURLException e) {

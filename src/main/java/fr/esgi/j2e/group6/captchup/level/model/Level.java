@@ -5,11 +5,9 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.net.URL;
-import java.util.HashSet;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,15 +22,18 @@ public class Level {
 
     private URL image;
 
-    public Level() { }
+    private LocalDate creationDate;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL )
     private List<LevelPrediction> levelPredictions;
 
+    public Level() { }
+
     public Level(URL image, User creator, LevelPrediction... levelPredictions) {
         this.image = image;
         this.creator = creator;
+        this.creationDate = LocalDate.now();
         for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
         this.levelPredictions = Stream.of(levelPredictions).collect(Collectors.toList());
     }
@@ -40,6 +41,7 @@ public class Level {
     public Level(URL image, User creator, List<LevelPrediction> levelPredictions) {
         this.image = image;
         this.creator = creator;
+        this.creationDate = LocalDate.now();
         for(LevelPrediction levelPrediction : levelPredictions) levelPrediction.setLevel(this);
         this.levelPredictions = levelPredictions;
     }
