@@ -6,6 +6,7 @@ import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
 import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
+import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
 import fr.esgi.j2e.group6.captchup.level.service.LevelAnswerService;
 import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.level.service.PredictionService;
@@ -34,6 +35,7 @@ public class LevelController {
     @Autowired PredictionService predictionService;
     @Autowired LevelAnswerRepository levelAnswerRepository;
     @Autowired LevelAnswerService levelAnswerService;
+    @Autowired PredictionRepository predictionRepository;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/all")
@@ -78,6 +80,13 @@ public class LevelController {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
         }
         return ResponseEntity.status(HttpStatus.OK).body(levelAnswer);
+    }
+
+    @GetMapping(path = "/{id}/predictions/solved")
+    public @ResponseBody Iterable<Prediction> getSolvedPredictions(@PathVariable("id") int levelId) {
+        User user = userService.getCurrentLoggedInUser();
+
+        return predictionRepository.findSolvedPredictions(levelId, user.getId());
     }
 
 }

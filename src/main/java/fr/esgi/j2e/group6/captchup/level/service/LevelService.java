@@ -36,10 +36,6 @@ public class LevelService {
 
     @Autowired LevelAnswerService levelAnswerService;
 
-    public List<Level> getUnfinishedLevelsBy(User user) {
-        return null;
-    }
-
     /**
      * @return level if created, null if not
      */

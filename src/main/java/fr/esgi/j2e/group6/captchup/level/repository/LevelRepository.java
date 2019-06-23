@@ -1,6 +1,7 @@
 package fr.esgi.j2e.group6.captchup.level.repository;
 
 import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,7 +36,5 @@ public interface LevelRepository extends JpaRepository<Level, Integer> {
             nativeQuery = true
     )
     List<Level> findUnfinishedLevelsBy(int userId);
-
-
 
 }
