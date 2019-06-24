@@ -47,7 +47,6 @@ public class LevelRepositoryTest {
     @After
     public void after() {
         userRepository.delete(user);
-
     }
 
     @Transactional
