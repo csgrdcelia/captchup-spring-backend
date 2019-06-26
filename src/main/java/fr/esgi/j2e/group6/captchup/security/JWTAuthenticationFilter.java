@@ -2,7 +2,9 @@ package fr.esgi.j2e.group6.captchup.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import fr.esgi.j2e.group6.captchup.user.model.User;
+import fr.esgi.j2e.group6.captchup.user.model.UserSerializer;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -64,7 +66,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(HMAC512(SECRET.getBytes()));
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
         res.addHeader("connectedUserId", connectedUser.getId().toString());
+        res.getWriter().write(new Gson().toJson(connectedUser));
+        res.setContentType("application/json");
     }
-
-
 }
