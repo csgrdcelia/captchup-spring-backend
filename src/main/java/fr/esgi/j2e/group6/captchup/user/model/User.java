@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@JsonSerialize(using = UserSerializer.class)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
