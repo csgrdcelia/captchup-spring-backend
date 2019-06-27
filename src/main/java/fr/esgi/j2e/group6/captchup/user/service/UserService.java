@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.List;
@@ -56,10 +57,14 @@ public class UserService implements UserDetailsService {
         return loggedUser;
     }
 
+    public User getUserByUsername(@NotNull String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public User getCurrentLoggedInUser() {
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return userRepository.findByUsername(username);
+        return this.getUserByUsername(username);
     }
 
     public User unfollowUser(User activeUser, Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {
