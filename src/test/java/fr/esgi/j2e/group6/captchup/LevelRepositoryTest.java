@@ -46,7 +46,7 @@ public class LevelRepositoryTest {
 
     @After
     public void after() {
-        userRepository.delete(user);
+        userRepository.deleteInBatch(Arrays.asList(user));
     }
 
     @Transactional
@@ -144,5 +144,4 @@ public class LevelRepositoryTest {
         assert(finishedLevels.size() == 1);
         assert(finishedLevels.get(0).getId() == level.getId());
     }
-
 }

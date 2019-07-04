@@ -37,7 +37,7 @@ public class LevelServiceTest {
 
     @Before
     public void before() {
-        user = userRepository.save(new User("user1", "user1"));
+        user = userRepository.save(new User("user5", "user1"));
     }
 
     @After

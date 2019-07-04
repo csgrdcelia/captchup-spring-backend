@@ -36,4 +36,13 @@ public interface LevelRepository extends JpaRepository<Level, Integer> {
     )
     List<Level> findUnfinishedLevelsBy(int userId);
 
+    @Query(
+            value = "SELECT * FROM level as L " +
+                    "WHERE L.creator_id != ?1 " +
+                    "AND L.id NOT IN " +
+                    "(SELECT level_id FROM `level_answer` AS LA " +
+                    "WHERE user_id = ?1);",
+            nativeQuery = true
+    )
+    List<Level> findAllUntestedLevels(int userId);
 }

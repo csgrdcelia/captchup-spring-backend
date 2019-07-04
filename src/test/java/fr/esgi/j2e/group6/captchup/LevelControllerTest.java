@@ -70,7 +70,6 @@ public class LevelControllerTest {
     @Ignore("api isn't free")
     @Test
     public void shouldCreateLevel() throws Exception {
-
         File file = new File("src/main/resources/test-image.jpg");
         FileInputStream input = new FileInputStream(file);
         MockMultipartFile multipartFile = new MockMultipartFile("image",
@@ -81,7 +80,6 @@ public class LevelControllerTest {
                         .file("image", multipartFile.getBytes())
                         .header("Authorization",token))
                 .andExpect(status().isCreated());
-
     }
 
 

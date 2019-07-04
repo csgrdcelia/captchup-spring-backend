@@ -46,7 +46,7 @@ public class VisionServiceTest {
 
     @Before
     public void setUp() {
-        user = userRepository.save(new User("user1", "user1"));
+        user = userRepository.save(new User("user4", "user1"));
     }
 
     @After

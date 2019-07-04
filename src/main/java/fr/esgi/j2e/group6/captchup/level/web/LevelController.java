@@ -89,4 +89,9 @@ public class LevelController {
         return predictionRepository.findSolvedPredictions(levelId, user.getId());
     }
 
+    @GetMapping(path = "/explore")
+    public @ResponseBody Iterable<Level> exploreLevels() {
+        User user = userService.getCurrentLoggedInUser();
+        return levelRepository.findAllUntestedLevels(user.getId());
+    }
 }
