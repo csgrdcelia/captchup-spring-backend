@@ -1,5 +1,7 @@
 package fr.esgi.j2e.group6.captchup.user.web;
 
+import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
@@ -22,18 +24,12 @@ import java.util.Optional;
 @RequestMapping(path="/user")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private UserService userService;
+    @Autowired private UserRepository userRepository;
+    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired private UserService userService;
+    @Autowired private LevelRepository levelRepository;
 
-    public UserController(UserRepository userRepository,
-                          BCryptPasswordEncoder bCryptPasswordEncoder,
-                          UserService userService) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.userService = userService;
-    }
+    public UserController() { }
 
     @GetMapping(path="/all")
     public @ResponseBody Iterable<User> getAllUsers() {
@@ -102,5 +98,15 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @GetMapping(path = "/{id}/level/finished")
+    public @ResponseBody Iterable<Level> getFinishedLevelsBy(@PathVariable("id") int id) {
+        return levelRepository.findFinishedLevelsBy(id);
+    }
+
+    @GetMapping(path = "/{id}/level/unfinished")
+    public @ResponseBody Iterable<Level> getUnfinishedLevelsBy(@PathVariable("id") int id) {
+        return levelRepository.findUnfinishedLevelsBy(id);
     }
 }

@@ -2,7 +2,9 @@ package fr.esgi.j2e.group6.captchup.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import fr.esgi.j2e.group6.captchup.user.model.User;
+import fr.esgi.j2e.group6.captchup.user.model.UserSerializer;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -63,6 +65,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+
         res.addHeader("Content-Type", "application/json");
 
         ObjectMapper mapper = new ObjectMapper();
@@ -70,6 +73,4 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         res.getWriter().write(userJson);
     }
-
-
 }

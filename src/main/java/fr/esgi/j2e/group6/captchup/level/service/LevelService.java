@@ -27,24 +27,14 @@ import java.util.Optional;
 @Service
 public class LevelService {
 
-    @Autowired
-    private LevelRepository levelRepository;
-
-    @Autowired
-    private PredictionRepository predictionRepository;
-
-    @Autowired
-    private VisionService visionService;
-
-    @Autowired
-    private UserService userService;
-
+    @Autowired private LevelRepository levelRepository;
+    @Autowired private PredictionRepository predictionRepository;
+    @Autowired private VisionService visionService;
+    @Autowired private UserService userService;
     @Autowired private LevelService levelService;
-
     @Autowired private PredictionService predictionService;
 
     @Autowired LevelAnswerService levelAnswerService;
-
 
     /**
      * @return level if created, null if not

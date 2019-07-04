@@ -16,9 +16,6 @@ public class Prediction {
 
     private String word;
 
-    /*@OneToMany(mappedBy = "prediction", cascade = CascadeType.ALL)
-    private Set<LevelPrediction> levelPredictions = new HashSet<>();*/
-
     public Prediction() {}
 
     @Override

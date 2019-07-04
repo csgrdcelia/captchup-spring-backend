@@ -15,4 +15,18 @@ public interface PredictionRepository extends JpaRepository<Prediction, Integer>
             nativeQuery = true
     )
     List<Prediction> getPredictionsByLevelId(Integer level_id);
+
+    @Query(
+            value = "SELECT * " +
+                    "FROM prediction " +
+                    "WHERE id IN (" +
+                    "SELECT prediction_id " +
+                    "FROM level_answer as LA " +
+                    "WHERE LA.level_id = ?1 " +
+                    "AND LA.user_id = ?2" +
+                    ");",
+            nativeQuery = true
+    )
+    List<Prediction> findSolvedPredictions(int levelId, int userId);
+
 }

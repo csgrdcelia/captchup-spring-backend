@@ -2,15 +2,13 @@ package fr.esgi.j2e.group6.captchup;
 
 import com.javaetmoi.core.persistence.hibernate.JpaLazyLoadingUtil;
 import fr.esgi.j2e.group6.captchup.level.model.*;
+import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import org.hibernate.Hibernate;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +32,8 @@ public class LevelRepositoryTest {
 
     @Autowired UserRepository userRepository;
 
+    @Autowired LevelAnswerRepository levelAnswerRepository;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -47,7 +47,6 @@ public class LevelRepositoryTest {
     @After
     public void after() {
         userRepository.delete(user);
-
     }
 
     @Transactional
@@ -91,4 +90,60 @@ public class LevelRepositoryTest {
 
         assert(createdLevelsToday == 2);
     }
+
+    @Test
+    public void shouldFindUnfinishedLevels() throws MalformedURLException {
+        List<Prediction> predictions = new ArrayList<>();
+        predictions.add(predictionRepository.save(new Prediction("test1")));
+        predictions.add(predictionRepository.save(new Prediction("test2")));
+        predictions.add(predictionRepository.save(new Prediction("test3")));
+
+        List<LevelPrediction> levelPredictions = new ArrayList<>();
+        levelPredictions.add(new LevelPrediction(predictions.get(0), 90.0));
+        levelPredictions.add(new LevelPrediction(predictions.get(1), 91.0));
+        levelPredictions.add(new LevelPrediction(predictions.get(2), 91.0));
+
+        Level level = levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
+
+        LevelAnswer levelAnswer1 = levelAnswerRepository.save(new LevelAnswer(level, predictions.get(0), user, "test1"));
+
+        List<Level> unfinishedLevels = levelRepository.findUnfinishedLevelsBy(user.getId());
+
+        levelAnswerRepository.delete(levelAnswer1);
+        levelRepository.delete(level);
+        predictionRepository.deleteAll(predictions);
+
+        assert(unfinishedLevels.size() == 1);
+        assert(unfinishedLevels.get(0).getId() == level.getId());
+    }
+
+    @Test
+    public void shouldFindFinishedLevels() throws MalformedURLException {
+        List<Prediction> predictions = new ArrayList<>();
+        predictions.add(predictionRepository.save(new Prediction("test1")));
+        predictions.add(predictionRepository.save(new Prediction("test2")));
+        predictions.add(predictionRepository.save(new Prediction("test3")));
+
+        List<LevelPrediction> levelPredictions = new ArrayList<>();
+        levelPredictions.add(new LevelPrediction(predictions.get(0), 90.0));
+        levelPredictions.add(new LevelPrediction(predictions.get(1), 91.0));
+        levelPredictions.add(new LevelPrediction(predictions.get(2), 91.0));
+
+        Level level = levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
+
+        List<LevelAnswer> levelAnswers = new ArrayList<>();
+        levelAnswers.add(levelAnswerRepository.save(new LevelAnswer(level, predictions.get(0), user, "test1")));
+        levelAnswers.add(levelAnswerRepository.save(new LevelAnswer(level, predictions.get(1), user, "test2")));
+        levelAnswers.add(levelAnswerRepository.save(new LevelAnswer(level, predictions.get(2), user, "test3")));
+
+        List<Level> finishedLevels = levelRepository.findFinishedLevelsBy(user.getId());
+
+        levelAnswerRepository.deleteAll(levelAnswers);
+        levelRepository.delete(level);
+        predictionRepository.deleteAll(predictions);
+
+        assert(finishedLevels.size() == 1);
+        assert(finishedLevels.get(0).getId() == level.getId());
+    }
+
 }
