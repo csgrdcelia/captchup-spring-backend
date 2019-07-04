@@ -60,8 +60,7 @@ public class LevelRepositoryTest {
         levelPredictions.add(new LevelPrediction(predictionA, 90.0));
         levelPredictions.add(new LevelPrediction(predictionB, 91.0));
 
-        Level level = levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
-
+        Level level = levelRepository.save(new Level(new URL("http://www.google1.com"), user, levelPredictions));
         Optional<Level> optionalLevel = levelRepository.findById(level.getId());
 
         assert(optionalLevel.isPresent());
@@ -73,7 +72,7 @@ public class LevelRepositoryTest {
         assert(foundLevel.getLevelPredictions().get(1).getPrediction().getWord().equals("Prediction B"));
         assert(foundLevel.getLevelPredictions().get(1).getPertinence().equals(91.0));
 
-        levelRepository.delete(foundLevel);
+        levelRepository.deleteInBatch(Arrays.asList(level));
     }
 
     @Test
