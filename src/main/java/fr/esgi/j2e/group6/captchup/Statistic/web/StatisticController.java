@@ -24,7 +24,7 @@ public class StatisticController {
     @Autowired
     UserService userService;
 
-    @GetMapping(path = "/getNumberOfTestedLevels")
+    @GetMapping(path = "/getNumberOfLevelAnswer")
     public @ResponseBody
     ResponseEntity<Integer> getNumberOfTestedLevels() {
         List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswers();
@@ -32,7 +32,7 @@ public class StatisticController {
         return ResponseEntity.status(HttpStatus.OK).body(levelAnswers.size());
     }
 
-    @GetMapping(path = "/getNumberOfTestedLevelsByUser")
+    @GetMapping(path = "/getNumberOfLevelAnswerByUser")
     public @ResponseBody
     ResponseEntity<Integer> getNumberOfTestedLevelsByUser() {
         try {
