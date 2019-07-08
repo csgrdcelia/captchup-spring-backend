@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -73,6 +74,34 @@ public class StatisticController {
         try {
             Double averageLevelTrial = levelAnswerService.getAverageNumberOfAnswersPerCompletedLevels(levelId);
         return ResponseEntity.status(HttpStatus.OK).body(averageLevelTrial);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping(path = "/getNumberOfLevelTestedByUser")
+    public @ResponseBody
+    ResponseEntity<Integer> getNumberOfLevelTestedByUser() {
+        ArrayList<LevelAnswer> levelAnswersList = new ArrayList<>();
+        boolean levelAlreadyAdded = false;
+
+        try {
+            User user = userService.getCurrentLoggedInUser();
+            List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswersById(user);
+
+            for (LevelAnswer levelAnswer: levelAnswers) {
+                for (LevelAnswer answer : levelAnswersList) {
+                    if (answer.getLevel().getId() == levelAnswer.getLevel().getId()) {
+                        levelAlreadyAdded = true;
+                        break;
+                    }
+                }
+                if(!levelAlreadyAdded) {
+                    levelAnswersList.add(levelAnswer);
+                }
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(levelAnswersList.size());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
