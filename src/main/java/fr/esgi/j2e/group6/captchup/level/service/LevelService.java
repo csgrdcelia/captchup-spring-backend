@@ -1,12 +1,10 @@
 package fr.esgi.j2e.group6.captchup.level.service;
 
-import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
 import fr.esgi.j2e.group6.captchup.level.model.LevelPrediction;
 import fr.esgi.j2e.group6.captchup.level.model.Prediction;
-import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
@@ -77,6 +75,14 @@ public class LevelService {
             prediction = predictionRepository.save(prediction);
         }
         return prediction;
+    }
+
+    public List<Level> getAllLevels() {
+        return levelRepository.findAll();
+    }
+
+    public List<Level> getAllLevelsByUser(User user) {
+        return levelRepository.findAllByCreator(user);
     }
 
     public Optional<Level> getLevelById(Integer id) {

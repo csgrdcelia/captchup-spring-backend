@@ -7,6 +7,7 @@ import fr.esgi.j2e.group6.captchup.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,5 +21,33 @@ public class LevelAnswerService {
 
     public LevelAnswer save(LevelAnswer levelAnswer) {
         return levelAnswerRepository.save(levelAnswer);
+    }
+
+    public List<LevelAnswer> getAllLevelAnswers() {
+        return levelAnswerRepository.findAll();
+    }
+
+    public List<LevelAnswer> getAllLevelAnswersById(User user) {
+        return levelAnswerRepository.findAllByUser(user);
+    }
+
+    public Integer getNumberOfSolvedLevels() {
+        return levelAnswerRepository.numberOfSolvedLevels();
+    }
+
+    public Integer getNumberOfSolvedLevelsByUser(int id) {
+        return levelAnswerRepository.numberOfSolvedLevelsByUser(id);
+    }
+
+    public Double getAverageNumberOfAnswersPerCompletedLevels(int id) {
+        return levelAnswerRepository.averageNumberOfAnswersAndCompletedLevels(id);
+    }
+
+    public List<LevelAnswer> getAllLevelAnswerByUserAndPredictionNotNull(User user) {
+        return levelAnswerRepository.findAllByUserAndPredictionNotNull(user);
+    }
+
+    public List<LevelAnswer> getAllLevelAnswerByPredictionNotNull() {
+        return levelAnswerRepository.findAllByPredictionNotNull();
     }
 }

@@ -1,9 +1,7 @@
 package fr.esgi.j2e.group6.captchup.level.web;
 
-import com.google.api.client.util.DateTime;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
-import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
