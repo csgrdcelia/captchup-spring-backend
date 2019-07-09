@@ -107,13 +107,26 @@ public class StatisticController {
         }
     }
 
-    @GetMapping(path = "/getGoodAnswersRate")
+    @GetMapping(path = "/getGoodAnswersRateByUser")
     public @ResponseBody
-    ResponseEntity<Double> getGoodAnswersRate() {
+    ResponseEntity<Double> getGoodAnswersRateByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
             List<LevelAnswer> levelAnswersPredictionNotNull = levelAnswerService.getAllLevelAnswerByUserAndPredictionNotNull(user);
             List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswersById(user);
+
+            return ResponseEntity.status(HttpStatus.OK).body((double)levelAnswersPredictionNotNull.size() / (double)levelAnswers.size());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping(path = "/getGoodAnswersRate")
+    public @ResponseBody
+    ResponseEntity<Double> getGoodAnswersRate() {
+        try {
+            List<LevelAnswer> levelAnswersPredictionNotNull = levelAnswerService.getAllLevelAnswerByPredictionNotNull();
+            List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswers();
 
             return ResponseEntity.status(HttpStatus.OK).body((double)levelAnswersPredictionNotNull.size() / (double)levelAnswers.size());
         } catch (Exception e) {

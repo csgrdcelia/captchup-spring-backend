@@ -46,4 +46,8 @@ public class LevelAnswerService {
     public List<LevelAnswer> getAllLevelAnswerByUserAndPredictionNotNull(User user) {
         return levelAnswerRepository.findAllByUserAndPredictionNotNull(user);
     }
+
+    public List<LevelAnswer> getAllLevelAnswerByPredictionNotNull() {
+        return levelAnswerRepository.findAllByPredictionNotNull();
+    }
 }

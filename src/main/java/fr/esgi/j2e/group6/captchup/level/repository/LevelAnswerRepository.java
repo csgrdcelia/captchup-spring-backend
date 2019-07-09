@@ -13,6 +13,7 @@ public interface LevelAnswerRepository extends JpaRepository<LevelAnswer, Intege
     Optional<LevelAnswer> findByUserAndLevelAndWord(User user, Level level, String word);
     List<LevelAnswer> findAllByUser(User user);
     List<LevelAnswer> findAllByUserAndPredictionNotNull(User user);
+    List<LevelAnswer> findAllByPredictionNotNull();
 
     @Query(
             value = "SELECT COUNT(nb) FROM(SELECT COUNT(id) as nb FROM level_answer " +
