@@ -151,4 +151,17 @@ public class StatisticController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping(path = "/getNumberOfCreatedLevelsByUser")
+    public @ResponseBody
+    ResponseEntity<Integer> getNumberOfCreatedLevelsByUser() {
+        try {
+            User user = userService.getCurrentLoggedInUser();
+            List<Level> levels = levelService.getAllLevelsByUser(user);
+
+            return ResponseEntity.status(HttpStatus.OK).body(levels.size());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
