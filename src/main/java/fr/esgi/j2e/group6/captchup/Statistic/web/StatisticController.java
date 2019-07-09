@@ -1,7 +1,9 @@
 package fr.esgi.j2e.group6.captchup.Statistic.web;
 
+import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
 import fr.esgi.j2e.group6.captchup.level.service.LevelAnswerService;
+import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,12 @@ public class StatisticController {
 
     @Autowired
     LevelAnswerService levelAnswerService;
+
     @Autowired
     UserService userService;
+
+    @Autowired
+    LevelService levelService;
 
     @GetMapping(path = "/getNumberOfLevelAnswer")
     public @ResponseBody
@@ -129,6 +135,18 @@ public class StatisticController {
             List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswers();
 
             return ResponseEntity.status(HttpStatus.OK).body((double)levelAnswersPredictionNotNull.size() / (double)levelAnswers.size());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping(path = "/getNumberOfCreatedLevels")
+    public @ResponseBody
+    ResponseEntity<Integer> getNumberOfCreatedLevels() {
+        try {
+            List<Level> levels = levelService.getAllLevels();
+
+            return ResponseEntity.status(HttpStatus.OK).body(levels.size());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
