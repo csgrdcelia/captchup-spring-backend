@@ -42,4 +42,8 @@ public class LevelAnswerService {
     public Double getAverageNumberOfAnswersPerCompletedLevels(int id) {
         return levelAnswerRepository.averageNumberOfAnswersAndCompletedLevels(id);
     }
+
+    public List<LevelAnswer> getAllLevelAnswerByUserAndPredictionNotNull(User user) {
+        return levelAnswerRepository.findAllByUserAndPredictionNotNull(user);
+    }
 }

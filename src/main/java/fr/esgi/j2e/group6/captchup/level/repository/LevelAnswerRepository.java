@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface LevelAnswerRepository extends JpaRepository<LevelAnswer, Integer> {
     Optional<LevelAnswer> findByUserAndLevelAndWord(User user, Level level, String word);
     List<LevelAnswer> findAllByUser(User user);
+    List<LevelAnswer> findAllByUserAndPredictionNotNull(User user);
 
     @Query(
             value = "SELECT COUNT(nb) FROM(SELECT COUNT(id) as nb FROM level_answer " +
