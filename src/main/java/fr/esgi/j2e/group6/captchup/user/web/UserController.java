@@ -1,7 +1,7 @@
 package fr.esgi.j2e.group6.captchup.user.web;
 
 import fr.esgi.j2e.group6.captchup.level.model.Level;
-import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
+import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
@@ -9,14 +9,9 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
@@ -27,7 +22,7 @@ public class UserController {
     @Autowired private UserRepository userRepository;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private UserService userService;
-    @Autowired private LevelRepository levelRepository;
+    @Autowired private LevelService levelService;
 
     public UserController() { }
 
@@ -102,11 +97,11 @@ public class UserController {
 
     @GetMapping(path = "/{id}/level/finished")
     public Iterable<Level> getFinishedLevelsBy(@PathVariable("id") int id) {
-        return levelRepository.findFinishedLevelsBy(id);
+        return levelService.getFinishedLevels(id);
     }
 
     @GetMapping(path = "/{id}/level/unfinished")
     public Iterable<Level> getUnfinishedLevelsBy(@PathVariable("id") int id) {
-        return levelRepository.findUnfinishedLevelsBy(id);
+        return levelService.getUnfinishedLevels(id);
     }
 }

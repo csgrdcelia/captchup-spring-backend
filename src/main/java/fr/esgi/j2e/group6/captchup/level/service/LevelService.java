@@ -16,9 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,6 +87,18 @@ public class LevelService {
 
     public Optional<Level> getLevelById(Integer id) {
         return levelRepository.findById(id);
+    }
+
+    public Iterable<Level> getFinishedLevels(int userId) {
+        return levelRepository.findFinishedLevelsBy(userId);
+    }
+
+    public Iterable<Level> getUnfinishedLevels(int userId) {
+        return levelRepository.findUnfinishedLevelsBy(userId);
+    }
+
+    public List<Level> getLevels(LocalDate creationDate, User creator) {
+        return levelRepository.findByCreationDateAndCreator(creationDate, creator);
     }
 
     public LevelAnswer solveLevel(Integer id, String answer) throws IllegalArgumentException {

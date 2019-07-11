@@ -7,20 +7,14 @@ import com.google.cloud.vision.v1.Feature;
 import fr.esgi.j2e.group6.captchup.config.model.Config;
 import fr.esgi.j2e.group6.captchup.config.repository.ConfigRepository;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
-import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
+import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
-import fr.esgi.j2e.group6.captchup.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.vision.CloudVisionTemplate;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.IntegerSyntax;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 
@@ -34,7 +28,7 @@ public class VisionService {
     private ConfigRepository configRepository;
 
     @Autowired
-    private LevelRepository levelRepository;
+    private LevelService levelService;
 
     public List<EntityAnnotation> callAPI(MultipartFile resource)
     {
@@ -45,7 +39,8 @@ public class VisionService {
 
     public boolean maxAmountOfCallsIsReached(LocalDate date, User creator) {
         Config config = configRepository.findByName("max_vision_calls");
-        List<Level> levels = levelRepository.findByCreationDateAndCreator(date, creator);
+
+        List<Level> levels = levelService.getLevels(date, creator);
 
         if(Integer.parseInt(config.getValue()) <= levels.size())
             return true;
