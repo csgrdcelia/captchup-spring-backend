@@ -2,6 +2,7 @@ package fr.esgi.j2e.group6.captchup.level.web;
 
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
+import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.PredictionRepository;
@@ -14,7 +15,6 @@ import fr.esgi.j2e.group6.captchup.vision.service.VisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +22,7 @@ import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/level")
 public class LevelController {
 
@@ -37,12 +37,12 @@ public class LevelController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Level> getAllLevels() {
+    public Iterable<Level> getAllLevels() {
         return levelRepository.findAll();
     }
 
     @GetMapping(path = "/{id}")
-    public @ResponseBody ResponseEntity<Level> getLevelById(@PathVariable("id") int id) {
+    public ResponseEntity<Level> getLevelById(@PathVariable("id") int id) {
         Optional<Level> level = levelRepository.findById(id);
 
         if(!level.isPresent()) {
@@ -53,7 +53,7 @@ public class LevelController {
     }
 
     @PostMapping(path = "/create")
-    public @ResponseBody ResponseEntity<Level> createLevel(@RequestBody MultipartFile image) {
+    public ResponseEntity<Level> createLevel(@RequestBody MultipartFile image) {
         User user = userService.getCurrentLoggedInUser();
 
         if(visionService.maxAmountOfCallsIsReached(LocalDate.now(), user)) {
@@ -69,7 +69,7 @@ public class LevelController {
     }
 
     @PostMapping(path = "/{id}/solve")
-    public @ResponseBody ResponseEntity<LevelAnswer> solveLevel(@PathVariable("id") Integer id, @RequestParam("answer") String answer) {
+    public ResponseEntity<LevelAnswer> solveLevel(@PathVariable("id") Integer id, @RequestParam("answer") String answer) {
         LevelAnswer levelAnswer;
 
         try {
@@ -81,14 +81,14 @@ public class LevelController {
     }
 
     @GetMapping(path = "/{id}/predictions/solved")
-    public @ResponseBody Iterable<Prediction> getSolvedPredictions(@PathVariable("id") int levelId) {
+    public Iterable<Prediction> getSolvedPredictions(@PathVariable("id") int levelId) {
         User user = userService.getCurrentLoggedInUser();
 
         return predictionRepository.findSolvedPredictions(levelId, user.getId());
     }
 
     @GetMapping(path = "/explore")
-    public @ResponseBody Iterable<Level> exploreLevels() {
+    public Iterable<Level> exploreLevels() {
         User user = userService.getCurrentLoggedInUser();
         return levelRepository.findAllUntestedLevels(user.getId());
     }

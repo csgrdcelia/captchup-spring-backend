@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping(path="/user")
 public class UserController {
 
@@ -32,12 +32,12 @@ public class UserController {
     public UserController() { }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<User> getAllUsers() {
+    public Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping(path="/{id}")
-    public @ResponseBody ResponseEntity<User> getUserById(@PathVariable("id") int id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") int id) {
         Optional<User> user = userRepository.findById(id);
 
         if(!user.isPresent()) {
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
         try {
             userService.deleteUser(id);
         } catch (NotFoundException e) {
@@ -101,12 +101,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}/level/finished")
-    public @ResponseBody Iterable<Level> getFinishedLevelsBy(@PathVariable("id") int id) {
+    public Iterable<Level> getFinishedLevelsBy(@PathVariable("id") int id) {
         return levelRepository.findFinishedLevelsBy(id);
     }
 
     @GetMapping(path = "/{id}/level/unfinished")
-    public @ResponseBody Iterable<Level> getUnfinishedLevelsBy(@PathVariable("id") int id) {
+    public Iterable<Level> getUnfinishedLevelsBy(@PathVariable("id") int id) {
         return levelRepository.findUnfinishedLevelsBy(id);
     }
 }

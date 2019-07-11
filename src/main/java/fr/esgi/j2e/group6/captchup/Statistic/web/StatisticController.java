@@ -10,15 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/statistic")
 public class StatisticController {
 
@@ -32,16 +29,14 @@ public class StatisticController {
     LevelService levelService;
 
     @GetMapping(path = "/getNumberOfLevelAnswer")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfTestedLevels() {
+    public ResponseEntity<Integer> getNumberOfTestedLevels() {
         List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswers();
 
         return ResponseEntity.status(HttpStatus.OK).body(levelAnswers.size());
     }
 
     @GetMapping(path = "/getNumberOfLevelAnswerByUser")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfTestedLevelsByUser() {
+    public ResponseEntity<Integer> getNumberOfTestedLevelsByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
             List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswersById(user);
@@ -52,8 +47,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getNumberOfSolvedLevels")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfLevelSolved() {
+    public ResponseEntity<Integer> getNumberOfLevelSolved() {
         try {
             Integer levelAnswersSolvedNumber = levelAnswerService.getNumberOfSolvedLevels();
             return ResponseEntity.status(HttpStatus.OK).body(levelAnswersSolvedNumber);
@@ -63,8 +57,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getNumberOfSolvedLevelsByUser")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfSolvedLevelsByUser() {
+    public ResponseEntity<Integer> getNumberOfSolvedLevelsByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
             Integer levelAnswersSolvedNumber = levelAnswerService.getNumberOfSolvedLevelsByUser(user.getId());
@@ -75,8 +68,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getAverageNumberOfAnswersPerCompletedLevels/{levelId}")
-    public @ResponseBody
-    ResponseEntity<Double> getAverageNumberOfAnswersPerCompletedLevels(@PathVariable("levelId") int levelId) {
+    public ResponseEntity<Double> getAverageNumberOfAnswersPerCompletedLevels(@PathVariable("levelId") int levelId) {
         try {
             Double averageLevelTrial = levelAnswerService.getAverageNumberOfAnswersPerCompletedLevels(levelId);
         return ResponseEntity.status(HttpStatus.OK).body(averageLevelTrial);
@@ -86,8 +78,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getNumberOfLevelTestedByUser")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfLevelTestedByUser() {
+    public ResponseEntity<Integer> getNumberOfLevelTestedByUser() {
         ArrayList<LevelAnswer> levelAnswersList = new ArrayList<>();
         boolean levelAlreadyAdded = false;
 
@@ -114,8 +105,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getGoodAnswersRateByUser")
-    public @ResponseBody
-    ResponseEntity<Double> getGoodAnswersRateByUser() {
+    public ResponseEntity<Double> getGoodAnswersRateByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
             List<LevelAnswer> levelAnswersPredictionNotNull = levelAnswerService.getAllLevelAnswerByUserAndPredictionNotNull(user);
@@ -128,8 +118,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getGoodAnswersRate")
-    public @ResponseBody
-    ResponseEntity<Double> getGoodAnswersRate() {
+    public ResponseEntity<Double> getGoodAnswersRate() {
         try {
             List<LevelAnswer> levelAnswersPredictionNotNull = levelAnswerService.getAllLevelAnswerByPredictionNotNull();
             List<LevelAnswer> levelAnswers = levelAnswerService.getAllLevelAnswers();
@@ -141,8 +130,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getNumberOfCreatedLevels")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfCreatedLevels() {
+    public ResponseEntity<Integer> getNumberOfCreatedLevels() {
         try {
             List<Level> levels = levelService.getAllLevels();
 
@@ -153,8 +141,7 @@ public class StatisticController {
     }
 
     @GetMapping(path = "/getNumberOfCreatedLevelsByUser")
-    public @ResponseBody
-    ResponseEntity<Integer> getNumberOfCreatedLevelsByUser() {
+    public ResponseEntity<Integer> getNumberOfCreatedLevelsByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
             List<Level> levels = levelService.getAllLevelsByUser(user);

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/config")
 public class ConfigController {
     @Autowired private ConfigRepository configRepository;
 
     @PatchMapping()
-    public @ResponseBody ResponseEntity<Config> updateConfig(@RequestBody Config config) {
+    public ResponseEntity<Config> updateConfig(@RequestBody Config config) {
 
         Optional<Config> optionalConfig = configRepository.findById(config.getId());
 
