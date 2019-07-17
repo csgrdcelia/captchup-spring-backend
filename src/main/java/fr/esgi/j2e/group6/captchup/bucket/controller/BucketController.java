@@ -5,6 +5,7 @@ import fr.esgi.j2e.group6.captchup.bucket.service.AmazonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import fr.esgi.j2e.group6.captchup.bucket.service.AmazonClient;
 
 @RestController
 @RequestMapping("/storage/")

@@ -1,5 +1,6 @@
 package fr.esgi.j2e.group6.captchup.bucket.service;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -10,6 +11,7 @@ import com.amazonaws.services.s3.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -22,19 +24,30 @@ public class AmazonClient {
 
     private AmazonS3 s3client;
 
-    @Value("${aws.endpointUrl}")
+    @Value("${aws_endpoint_url}")
     private String endpointUrl;
-    @Value("${aws.bucket.name}")
+    @Value("${aws_bucket_name}")
     private String bucketName;
-    @Value("${aws.accessKey}")
+    @Value("${aws_access_key_id}")
     private String accessKey;
-    @Value("${aws.secretKey}")
+    @Value("${aws_secret_access_key}")
     private String secretKey;
-    @Value("${aws.region}")
+    @Value("${aws_region}")
     private String region;
 
     @PostConstruct
     private void initializeAmazon() {
+//        AWSCredentials creds = null;
+//        try {
+//            creds = new ProfileCredentialsProvider().getCredentials();
+//        }
+//        catch(Exception e){
+//            throw new AmazonClientException("Credentials error", e);
+//        }
+//
+//        s3client = AmazonS3ClientBuilder.standard()
+//                .withCredentials(new AWSStaticCredentialsProvider(creds))
+//                .withRegion(this.region).build();
         BasicAWSCredentials creds = new BasicAWSCredentials(this.accessKey, this.secretKey);
         this.s3client = AmazonS3ClientBuilder.standard().withRegion(this.region).withCredentials(new AWSStaticCredentialsProvider(creds)).build();
     }
