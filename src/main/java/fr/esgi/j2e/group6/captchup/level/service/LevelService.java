@@ -47,7 +47,7 @@ public class LevelService {
 
         if (levelPredictions != null) {
             String fileUrl = amazonClient.uploadFile(multipartFile);
-            return levelRepository.save(new Level(new URL(fileUrl), user, levelPredictions));
+            return levelRepository.save(new Level(new URL("https://" + fileUrl), user, levelPredictions));
         }
 
         return null;
