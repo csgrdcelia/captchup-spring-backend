@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,6 +94,11 @@ public class AmazonClient {
 
     public S3ObjectInputStream getFileFromS3Bucket(String fileName) {
         S3Object object = s3client.getObject(new GetObjectRequest(bucketName , fileName));
+        try {
+            FileUtils.copyInputStreamToFile(object.getObjectContent(), new File(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return object.getObjectContent();
     }
 }
