@@ -16,4 +16,12 @@ public class PredictionService {
     public List<Prediction> getPredictionsByLevelId(Integer levelId) {
         return predictionRepository.getPredictionsByLevelId(levelId);
     }
+
+    public Prediction save(Prediction prediction) {
+        return predictionRepository.save(prediction);
+    }
+
+    public void deleteAll(List<Prediction> predictions) {
+        predictionRepository.deleteAll(predictions);
+    }
 }
