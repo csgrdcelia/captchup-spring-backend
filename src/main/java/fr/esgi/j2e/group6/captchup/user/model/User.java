@@ -2,15 +2,18 @@ package fr.esgi.j2e.group6.captchup.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@JsonSerialize(using = UserSerializer.class)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -41,6 +44,8 @@ public class User implements UserDetails {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        this.follow = new ArrayList<>();
+        this.followedBy = new ArrayList<>();
     }
 
     public User(String username, String password, List<User> followedUsers, List<User> followedByUsers) {
@@ -141,4 +146,12 @@ public class User implements UserDetails {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

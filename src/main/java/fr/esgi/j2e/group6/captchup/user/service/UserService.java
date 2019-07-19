@@ -1,25 +1,29 @@
 package fr.esgi.j2e.group6.captchup.user.service;
 
+import com.google.api.client.util.DateTime;
+import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.nio.file.AccessDeniedException;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
 
+    @Autowired
     private UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -53,10 +57,14 @@ public class UserService implements UserDetailsService {
         return loggedUser;
     }
 
+    public User getUserByUsername(@NotNull String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public User getCurrentLoggedInUser() {
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return userRepository.findByUsername(username);
+        return this.getUserByUsername(username);
     }
 
     public User unfollowUser(User activeUser, Optional<User> userToUnfollow) throws NotFoundException, AccessDeniedException {

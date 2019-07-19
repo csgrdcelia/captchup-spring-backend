@@ -1,5 +1,7 @@
 package fr.esgi.j2e.group6.captchup.user.web;
 
+import fr.esgi.j2e.group6.captchup.level.model.Level;
+import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
 import fr.esgi.j2e.group6.captchup.user.service.UserService;
@@ -7,41 +9,30 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping(path="/user")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private UserService userService;
+    @Autowired private UserRepository userRepository;
+    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired private UserService userService;
+    @Autowired private LevelService levelService;
 
-    public UserController(UserRepository userRepository,
-                          BCryptPasswordEncoder bCryptPasswordEncoder,
-                          UserService userService) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.userService = userService;
-    }
+    public UserController() { }
 
     @GetMapping(path="/all")
-    public @ResponseBody Iterable<User> getAllUsers() {
+    public Iterable<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping(path="/{id}")
-    public @ResponseBody ResponseEntity<User> getUserById(@PathVariable("id") int id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") int id) {
         Optional<User> user = userRepository.findById(id);
 
         if(!user.isPresent()) {
@@ -51,22 +42,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user.get());
     }
 
-    /*
     @DeleteMapping(path = "/delete/{id}")
-    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
-        Optional<User> user = userRepository.findById(id);
-        if(!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        userRepository.delete(user.get());
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }
-     */
-
-    @DeleteMapping(path = "/delete/{id}")
-    public @ResponseBody ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
+    public ResponseEntity<Object> deleteUser(@PathVariable("id") int id) {
         try {
             userService.deleteUser(id);
         } catch (NotFoundException e) {
@@ -116,5 +93,15 @@ public class UserController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @GetMapping(path = "/{id}/level/finished")
+    public Iterable<Level> getFinishedLevelsBy(@PathVariable("id") int id) {
+        return levelService.getFinishedLevels(id);
+    }
+
+    @GetMapping(path = "/{id}/level/unfinished")
+    public Iterable<Level> getUnfinishedLevelsBy(@PathVariable("id") int id) {
+        return levelService.getUnfinishedLevels(id);
     }
 }

@@ -43,7 +43,7 @@ public class UserTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void before() throws Exception {
         mapper = new ObjectMapper();
         jsonParser = new JacksonJsonParser();
 
@@ -203,17 +203,6 @@ public class UserTest {
     }
 
     @Test
-    public void signUp_withExistingUsername_shouldReturnConflict() throws Exception {
-        final ResultActions result = mockMvc.perform(
-                post("/user/sign-up")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(new User("user1", "user1")))
-        );
-
-        result.andExpect(status().isConflict());
-    }
-
-    @Test
     public void signUp_shouldReturnOk() throws Exception {
         // signup
         final ResultActions result = mockMvc.perform(
@@ -244,6 +233,33 @@ public class UserTest {
         assert(!userExists("temporary"));
     }
 
+    @Test
+    public void deleteUser_shouldDeleteAllFollowToThisUser() throws Exception {
+        //Make connected user to follow user1
+        final ResultActions result = mockMvc.perform(
+                patch("/user/follow/{id}", user1.getId())
+                        .header("Authorization",token)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        int user1_id = user1.getId();
+
+        //Delete user1
+        final ResultActions deletionResult = mockMvc.perform(
+                delete("/user/delete/{id}", user1.getId())
+                        .header("Authorization",token)
+                        .accept(MimeTypeUtils.APPLICATION_JSON_VALUE));
+
+        //Assert that user1 isn't in connected user's follows
+        for(User u: connectedUser.getFollow()) {
+            if(u.getId() == user1_id) {
+                assert(false);
+                return;
+            }
+        }
+
+        assert(true);
+    }
+
     public boolean userExists(String username) {
         User user = userRepository.findByUsername(username);
         return user != null;
@@ -252,8 +268,4 @@ public class UserTest {
     public void deleteUser(String username) {
         userRepository.delete(userRepository.findByUsername(username));
     }
-
-
-
-
 }
