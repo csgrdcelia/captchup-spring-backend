@@ -101,4 +101,10 @@ public class StatisticsTest {
         Integer value = levelAnswerRepository.numberOfSolvedLevelsByUser(user.getId());
         assert(value == 1);
     }
+
+    @Test
+    public void shouldReturnNumberOfGoodAnswerByUser() {
+        List<LevelAnswer> values = levelAnswerRepository.findAllByUserAndPredictionNotNull(user);
+        assert(values.size() == 3);
+    }
 }
