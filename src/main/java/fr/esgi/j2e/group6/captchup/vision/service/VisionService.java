@@ -34,6 +34,7 @@ public class VisionService {
     {
         AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(resource.getResource(), Feature.Type.LABEL_DETECTION);
 
+
         return response.getLabelAnnotationsList();
     }
 

@@ -1,6 +1,7 @@
 package fr.esgi.j2e.group6.captchup.level.service;
 
 import com.google.cloud.vision.v1.EntityAnnotation;
+import fr.esgi.j2e.group6.captchup.bucket.service.AmazonClient;
 import fr.esgi.j2e.group6.captchup.level.model.Level;
 import fr.esgi.j2e.group6.captchup.level.model.LevelAnswer;
 import fr.esgi.j2e.group6.captchup.level.model.LevelPrediction;
@@ -31,6 +32,7 @@ public class LevelService {
     @Autowired private UserService userService;
     @Autowired private LevelService levelService;
     @Autowired private PredictionService predictionService;
+    @Autowired private AmazonClient amazonClient;
 
     @Autowired LevelAnswerService levelAnswerService;
 
@@ -44,8 +46,8 @@ public class LevelService {
         List<LevelPrediction> levelPredictions = getFirstThreePredictions(annotations);
 
         if (levelPredictions != null) {
-            //TODO: save image and get image url
-            return levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
+            String fileUrl = amazonClient.uploadFile(multipartFile);
+            return levelRepository.save(new Level(new URL("https://" + fileUrl), user, levelPredictions));
         }
 
         return null;
