@@ -56,7 +56,7 @@ public class StatisticController {
         }
     }
 
-    @GetMapping(path = "/getNumberOfSolvedLevelsByUser")
+    @GetMapping(path = "/numberOfSolvedLevelsByUser")
     public ResponseEntity<Integer> getNumberOfSolvedLevelsByUser() {
         try {
             User user = userService.getCurrentLoggedInUser();
