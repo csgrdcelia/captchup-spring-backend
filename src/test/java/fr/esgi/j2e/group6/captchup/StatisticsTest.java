@@ -56,6 +56,7 @@ public class StatisticsTest {
     private LevelAnswer levelAnswer1;
     private LevelAnswer levelAnswer2;
     private LevelAnswer levelAnswer3;
+    private LevelAnswer levelAnswer4;
     private List<Prediction> predictions;
     private Level level;
     private List<LevelPrediction> levelPredictions;
@@ -85,6 +86,7 @@ public class StatisticsTest {
         levelAnswer1 = levelAnswerService.save(new LevelAnswer(level, predictions.get(0), user, "test"));
         levelAnswer2 = levelAnswerService.save(new LevelAnswer(level, predictions.get(1), user, "test1"));
         levelAnswer3 = levelAnswerService.save(new LevelAnswer(level, predictions.get(2), user, "test2"));
+        levelAnswer4 = levelAnswerService.save(new LevelAnswer(level, null, user, "test3"));
     }
 
     @After
@@ -97,7 +99,7 @@ public class StatisticsTest {
     }
 
     @Test
-    public void shouldReturnNumberOfLevelAnswerByUser() throws Exception {
+    public void shouldReturnNumberOfSolvedLevelByUser() {
         Integer value = levelAnswerRepository.numberOfSolvedLevelsByUser(user.getId());
         assert(value == 1);
     }
@@ -106,5 +108,11 @@ public class StatisticsTest {
     public void shouldReturnNumberOfGoodAnswerByUser() {
         List<LevelAnswer> values = levelAnswerRepository.findAllByUserAndPredictionNotNull(user);
         assert(values.size() == 3);
+    }
+
+    @Test
+    public void shouldReturnNumberOfLevelAnswerByUser() {
+        List<LevelAnswer> values = levelAnswerRepository.findAllByUser(user);
+        assert(values.size() == 4);
     }
 }
