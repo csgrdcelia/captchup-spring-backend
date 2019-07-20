@@ -136,4 +136,10 @@ public class StatisticsTest {
 
         assert(averageNumber.equals(resultExpected));
     }
+
+    @Test
+    public void shouldReturnAllLevelsCreatedByUser() {
+        List<Level> levels = levelRepository.findAllByCreator(user);
+        assert(levels.size() == 1);
+    }
 }
