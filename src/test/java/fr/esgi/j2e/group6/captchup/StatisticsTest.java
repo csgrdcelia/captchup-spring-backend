@@ -8,7 +8,6 @@ import fr.esgi.j2e.group6.captchup.level.model.Prediction;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelAnswerRepository;
 import fr.esgi.j2e.group6.captchup.level.repository.LevelRepository;
 import fr.esgi.j2e.group6.captchup.level.service.LevelAnswerService;
-import fr.esgi.j2e.group6.captchup.level.service.LevelService;
 import fr.esgi.j2e.group6.captchup.level.service.PredictionService;
 import fr.esgi.j2e.group6.captchup.user.model.User;
 import fr.esgi.j2e.group6.captchup.user.repository.UserRepository;
@@ -52,13 +51,11 @@ public class StatisticsTest {
     UserRepository userRepository;
 
     private User user;
+    private User user2;
     private ObjectMapper mapper;
-    private LevelAnswer levelAnswer1;
-    private LevelAnswer levelAnswer2;
-    private LevelAnswer levelAnswer3;
-    private LevelAnswer levelAnswer4;
+    private List<LevelAnswer> levelAnswers;
     private List<Prediction> predictions;
-    private Level level;
+    private Level level1;
     private List<LevelPrediction> levelPredictions;
 
     @Before
@@ -70,7 +67,15 @@ public class StatisticsTest {
                         .content(mapper.writeValueAsString(new User("testedUser", "testedUser")))
         );
 
+        final ResultActions resultSignUp2 = mockMvc.perform(
+                post("/user/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(new User("testedUser2", "testedUser2")))
+        );
+
         user = userRepository.findByUsername("testedUser");
+        user2 = userRepository.findByUsername("testedUser2");
+
         predictions = new ArrayList<>();
         predictions.add(predictionService.save(new Prediction("test1")));
         predictions.add(predictionService.save(new Prediction("test2")));
@@ -79,23 +84,31 @@ public class StatisticsTest {
         levelPredictions = new ArrayList<>();
         levelPredictions.add(new LevelPrediction(predictions.get(0), 90.0));
         levelPredictions.add(new LevelPrediction(predictions.get(1), 91.0));
-        levelPredictions.add(new LevelPrediction(predictions.get(2), 91.0));
+        levelPredictions.add(new LevelPrediction(predictions.get(2), 92.0));
 
-        level = levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
+        level1 = levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
 
-        levelAnswer1 = levelAnswerService.save(new LevelAnswer(level, predictions.get(0), user, "test"));
-        levelAnswer2 = levelAnswerService.save(new LevelAnswer(level, predictions.get(1), user, "test1"));
-        levelAnswer3 = levelAnswerService.save(new LevelAnswer(level, predictions.get(2), user, "test2"));
-        levelAnswer4 = levelAnswerService.save(new LevelAnswer(level, null, user, "test3"));
+        levelAnswers = new ArrayList<>();
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, predictions.get(0), user, "test")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, predictions.get(1), user, "test1")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, predictions.get(2), user, "test2")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, null, user, "test3")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, null, user, "test4")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, null, user, "test5")));
+
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, predictions.get(0), user2, "test")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, predictions.get(1), user2, "test1")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, predictions.get(2), user2, "test2")));
+        levelAnswers.add(levelAnswerService.save(new LevelAnswer(level1, null, user2, "test3")));
     }
 
     @After
     public void after() {
-        levelAnswerRepository.delete(levelAnswer1);
-        levelAnswerRepository.delete(levelAnswer2);
-        levelRepository.delete(level);
+        levelAnswerRepository.deleteAll(levelAnswers);
         predictionService.deleteAll(predictions);
+        levelRepository.delete(level1);
         userRepository.delete(user);
+        userRepository.delete(user2);
     }
 
     @Test
@@ -113,6 +126,14 @@ public class StatisticsTest {
     @Test
     public void shouldReturnNumberOfLevelAnswerByUser() {
         List<LevelAnswer> values = levelAnswerRepository.findAllByUser(user);
-        assert(values.size() == 4);
+        assert(values.size() == 6);
+    }
+
+    @Test
+    public void shouldReturnAverageNumberOfAnswersAndCompletedLevels() {
+        Double averageNumber = levelAnswerRepository.averageNumberOfAnswersAndCompletedLevels(level1.getId());
+        Double resultExpected = 5d;
+
+        assert(averageNumber.equals(resultExpected));
     }
 }
