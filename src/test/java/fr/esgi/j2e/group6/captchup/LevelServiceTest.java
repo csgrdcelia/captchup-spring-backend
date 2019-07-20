@@ -57,7 +57,7 @@ public class LevelServiceTest {
         levelRepository.delete(level);
     }
 
-    public MultipartFile getImageFile() throws IOException {
+    public static MultipartFile getImageFile() throws IOException {
         File file = new File("src/main/resources/test-image.jpg");
         FileInputStream input = new FileInputStream(file);
         return new MockMultipartFile("test-image",
