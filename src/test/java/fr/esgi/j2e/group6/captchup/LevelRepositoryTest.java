@@ -109,7 +109,7 @@ public class LevelRepositoryTest {
 
         levelAnswerRepository.delete(levelAnswer1);
         levelRepository.deleteInBatch(Arrays.asList(level));
-        predictionRepository.deleteAll(predictions);
+        predictionRepository.deleteInBatch(predictions);
 
         assert(unfinishedLevels.size() == 1);
         assert(unfinishedLevels.get(0).getId() == level.getId());

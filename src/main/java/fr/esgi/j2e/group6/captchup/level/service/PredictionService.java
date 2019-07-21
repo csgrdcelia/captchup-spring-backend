@@ -22,6 +22,6 @@ public class PredictionService {
     }
 
     public void deleteAll(List<Prediction> predictions) {
-        predictionRepository.deleteAll(predictions);
+        predictionRepository.deleteInBatch(predictions);
     }
 }

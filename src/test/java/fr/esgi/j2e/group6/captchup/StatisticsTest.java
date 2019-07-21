@@ -105,7 +105,7 @@ public class StatisticsTest {
 
     @After
     public void after() {
-        levelAnswerRepository.deleteAll(levelAnswers);
+        levelAnswerRepository.deleteInBatch(levelAnswers);
         predictionService.deleteAll(predictions);
         levelRepository.deleteInBatch(Arrays.asList(level1));
         userRepository.delete(user);

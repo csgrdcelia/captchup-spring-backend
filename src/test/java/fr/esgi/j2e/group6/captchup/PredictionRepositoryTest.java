@@ -71,7 +71,7 @@ public class PredictionRepositoryTest {
     @After
     public void after() {
         levelRepository.delete(level);
-        predictionRepository.deleteAll(predictions);
+        predictionRepository.deleteInBatch(predictions);
         userRepository.delete(user);
     }
 }
