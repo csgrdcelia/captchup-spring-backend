@@ -80,10 +80,7 @@ public class VisionServiceTest {
 
         boolean isReached = visionService.maxAmountOfCallsIsReached(LocalDate.now(), user);
 
-        for(Level level : levels)
-        {
-            levelRepository.delete(level);
-        }
+        levelRepository.deleteInBatch(levels);
 
         assert(isReached);
     }
@@ -100,10 +97,7 @@ public class VisionServiceTest {
 
         boolean isReached = visionService.maxAmountOfCallsIsReached(LocalDate.now(), user);
 
-        for(Level level : levels)
-        {
-            levelRepository.delete(level);
-        }
+        levelRepository.deleteInBatch(levels);
 
         assert(isReached == false);
     }

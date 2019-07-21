@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -54,7 +56,7 @@ public class LevelServiceTest {
         assertThat(level != null);
         assertThat(level.getLevelPredictions().get(0).getPrediction().getWord()).isEqualTo("Cactus");
 
-        levelRepository.delete(level);
+        levelRepository.deleteInBatch(Arrays.asList(level));
     }
 
     public static MultipartFile getImageFile() throws IOException {

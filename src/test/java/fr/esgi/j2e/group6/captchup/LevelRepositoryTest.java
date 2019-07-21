@@ -84,8 +84,7 @@ public class LevelRepositoryTest {
 
         int createdLevelsToday = levelRepository.findByCreationDateAndCreator(LocalDate.now(), user).size();
 
-        levelRepository.delete(level1);
-        levelRepository.delete(level2);
+        levelRepository.deleteInBatch(Arrays.asList(level1, level2));
 
         assert(createdLevelsToday == 2);
     }
@@ -102,14 +101,14 @@ public class LevelRepositoryTest {
         levelPredictions.add(new LevelPrediction(predictions.get(1), 91.0));
         levelPredictions.add(new LevelPrediction(predictions.get(2), 91.0));
 
-        Level level = levelRepository.save(new Level(new URL("http://www.google.com"), user, levelPredictions));
+        Level level = levelRepository.save(new Level(new URL("http://www.googletest.com"), user, levelPredictions));
 
         LevelAnswer levelAnswer1 = levelAnswerRepository.save(new LevelAnswer(level, predictions.get(0), user, "test1"));
 
         List<Level> unfinishedLevels = levelRepository.findUnfinishedLevelsBy(user.getId());
 
         levelAnswerRepository.delete(levelAnswer1);
-        levelRepository.delete(level);
+        levelRepository.deleteInBatch(Arrays.asList(level));
         predictionRepository.deleteAll(predictions);
 
         assert(unfinishedLevels.size() == 1);
@@ -138,7 +137,7 @@ public class LevelRepositoryTest {
         List<Level> finishedLevels = levelRepository.findFinishedLevelsBy(user.getId());
 
         levelAnswerRepository.deleteAll(levelAnswers);
-        levelRepository.delete(level);
+        levelRepository.deleteInBatch(Arrays.asList(level));
         predictionRepository.deleteAll(predictions);
 
         assert(finishedLevels.size() == 1);

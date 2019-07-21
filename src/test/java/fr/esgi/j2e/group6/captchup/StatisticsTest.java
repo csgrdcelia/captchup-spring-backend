@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -106,7 +107,7 @@ public class StatisticsTest {
     public void after() {
         levelAnswerRepository.deleteAll(levelAnswers);
         predictionService.deleteAll(predictions);
-        levelRepository.delete(level1);
+        levelRepository.deleteInBatch(Arrays.asList(level1));
         userRepository.delete(user);
         userRepository.delete(user2);
     }
