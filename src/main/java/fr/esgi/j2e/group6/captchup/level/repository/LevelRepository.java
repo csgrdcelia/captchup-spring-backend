@@ -32,7 +32,7 @@ public interface LevelRepository extends JpaRepository<Level, Integer> {
             value = "SELECT * FROM level as L " +
                     "WHERE L.id in \t(\tSELECT level_id FROM level_answer " +
                     "WHERE prediction_id IS NOT NULL " +
-                    "WHERE user_id = ?1 " +
+                    "AND user_id = ?1 " +
                     "GROUP BY level_id " +
                     "HAVING COUNT(*) < 3 );",
             nativeQuery = true
