@@ -1,37 +1,22 @@
-# J2EProject
+# Spring Boot backend of Captch'up game
+This project was part of ESGI's J2E Framework course.
 
-## How to use the API
+### Application
+We decided to use the concept of one of my previous projects : [Captch'up android](https://github.com/csgrdcelia/captchup-android) </br>
+It is a game thas uses the Cloud Vision API : the player upload any picture from his gallery and after a call to the Vision API a level is created with the 3 most relevant predictions. Then the player can try to guess them :)
 
-### Authorization
+### Specs
+- Project divided into 4 APIs : 
+  - Level : Manage the game (creation, solving...)
+  - Stats : Returns user specific & global stats 
+  - User : Manages user (creation of accounts, following...)
+  - Config : Allow to update configuration at any time : for instance, the number of uploads authorized in a day for a user (default is 5)
+- The server application was hosted on AWS, with Elastic Beanstalk and communicated with a mysql server
+- The images were stored in a S3 Bucket
+- The CI/CD was hosted on a linux server at home (because less expensive) and used to test and deploy to our Elastic Beanstalk server
+- To make our APIs stateless we used JWT Authentication with Spring Security 
+- We tested with JUnit
+- I made an [IOS frontend](https://github.com/csgrdcelia/captchup-ios)
 
-#### Sign up a user
-
-Create a user to log in the application.
-
-Call the route `localhost:5000/user/sign-up` with data of the user you want to create
-```json
-{
-  "username": "word",
-  "password": "pass"
-}
-```
-
-#### Login as a user
-
-Log in the application to be able to call any route
-
-Call the route `localhost:5000/login` with data of the user you want to log in as.
-```json
-{
-  "username": "word",
-  "password": "pass"
-}
-```
-
-The route returns a token in the headers.
-`Authorization → Bearer eyJ0eXAiOiJKV1QiLCJhbGaaOiJIUzUxMiJ9.eyJzdWIiOiJ2aW5jZW50IiwiZXhwIjoxNTU4NTk4MjQ4fQ.L2WSsw9ohkEifZriylPRvD6SAGd7iaEbdBkYc46YJFilSqmgx7FELtq8tRFZlldBUnOZEMbEYj1DS1nSTfGfsA`
-
-You need to keep it to use it in the headers of your next requests. 
-
-On postman, you can put it in the `Authorization` section with the `Bearer token` type.
-
+### Authors
+See contributors :)
